@@ -1,8 +1,18 @@
 import { Box, Grid } from "@mui/material";
+import { useState } from "react";
 import { TbSquareRoundedArrowLeftFilled } from "react-icons/tb";
 import { TbSquareRoundedArrowRightFilled } from "react-icons/tb";
 
 const Calendar = () => {
+  const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  const currentDate = new Date();
+  const [currentMonth, setCurrentMonth] = useState(currentDate.getMonth());
+  const [currentYear, setCurrentYear] = useState(currentDate.getFullYear())
+
+  const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+  const firstDayOfMonth = new Date(currentYear, currentMonth, 1).getDay();
+  console.log(currentMonth, currentYear, daysInMonth, firstDayOfMonth);
   return (
     <>
       <Grid container spacing={5} sx={{ backgroundColor: 'blue', minHeight: '100vh', p: 1, gap: 1, height: '100vh', display: 'flex', flexGrow: 1 }}> {/* Main wrapper */}
@@ -19,51 +29,23 @@ const Calendar = () => {
           
             <Box sx={styles.dateGridWrapper}>
               <Grid container spacing={0} columns={7}>
-                <Grid item xs={1} sx={styles.dayGridTitle}>S</Grid>
-                <Grid item xs={1} sx={styles.dayGridTitle}>M</Grid>
-                <Grid item xs={1} sx={styles.dayGridTitle}>T</Grid>
-                <Grid item xs={1} sx={styles.dayGridTitle}>W</Grid>
-                <Grid item xs={1} sx={styles.dayGridTitle}>H</Grid>
-                <Grid item xs={1} sx={styles.dayGridTitle}>F</Grid>
-                <Grid item xs={1} sx={styles.dayGridTitle}>S</Grid>
+                {daysOfWeek.map((day) => {
+                  return <Grid item xs={1} sx={styles.dayGridTitle} key={day}>{day}</Grid>
+                })}
               </Grid>
               
-              <Grid container spacing={0} columns={7}> {/* Calendar Date Grid */}
-                <Grid xs={1} sx={styles.dayGrid}>1</Grid>
-                <Grid xs={1} sx={styles.dayGrid}>2</Grid>
-                <Grid xs={1} sx={styles.dayGrid}>3</Grid>
-                <Grid xs={1} sx={styles.dayGrid}>4</Grid>
-                <Grid xs={1} sx={styles.dayGrid}>5</Grid>
-                <Grid xs={1} sx={styles.dayGrid}>6</Grid>
-                <Grid xs={1} sx={styles.dayGrid}>7</Grid>
-                <Grid xs={1} sx={styles.dayGrid}>8</Grid>
-                <Grid xs={1} sx={styles.dayGrid}>9</Grid>
-                <Grid xs={1} sx={styles.dayGrid}>10</Grid>
-                <Grid xs={1} sx={styles.dayGrid}>11</Grid>
-                <Grid xs={1} sx={styles.dayGrid}>12</Grid>
-                <Grid xs={1} sx={styles.dayGrid}>13</Grid>
-                <Grid xs={1} sx={styles.dayGrid}>14</Grid>
-                <Grid xs={1} sx={styles.dayGrid}>15</Grid>
-                <Grid xs={1} sx={styles.dayGrid}>16</Grid>
-                <Grid xs={1} sx={styles.dayGrid}>17</Grid>
-                <Grid xs={1} sx={styles.dayGrid}>18</Grid>
-                <Grid xs={1} sx={styles.dayGrid}>19</Grid>
-                <Grid xs={1} sx={styles.dayGrid}>20</Grid>
-                <Grid xs={1} sx={styles.dayGrid}>21</Grid>
-                <Grid xs={1} sx={styles.dayGrid}>22</Grid>
-                <Grid xs={1} sx={styles.dayGrid}>23</Grid>
-                <Grid xs={1} sx={styles.dayGrid}>24</Grid>
-                <Grid xs={1} sx={styles.dayGrid}>25</Grid>
-                <Grid xs={1} sx={styles.dayGrid}>26</Grid>
-                <Grid xs={1} sx={styles.dayGrid}>27</Grid>
-                <Grid xs={1} sx={styles.dayGrid}>28</Grid>
-                <Grid xs={1} sx={styles.dayGrid}>29</Grid>
-                <Grid xs={1} sx={styles.dayGrid}>30</Grid>
-                <Grid xs={1} sx={styles.dayGrid}>31</Grid>
+              <Grid container spacing={0} columns={7} sx={{ mb: 5 }}> {/* Calendar Date Grid */}
+                {[...Array(firstDayOfMonth).keys()].map((_, index) => (
+                  <Grid item xs={1} sx={styles.dayGrid} key={`empty-${index}`}/>
+                ))}
+                {[...Array(daysInMonth).keys()].map((day) => (
+                  <Grid item xs={1} sx={styles.dayGrid} key={day + 1}>{day + 1}</Grid>
+                ))}
               </Grid>
             </Box>
         </Grid>
         <Grid item xs={5} sx={styles.eventGrid}>
+          <Box>{/* Event Dialog Placeholder */}</Box>
           <Box>
             <h1>Today's Events</h1>
           </Box>
@@ -84,6 +66,8 @@ const styles = {
     flexDirection: "row",
     justifyContent: "space-evenly",
     alignItems: "center",
+    fontSize: '2rem',
+    my: 2
   },
   monthYearNav: {
     display: 'flex',
@@ -108,13 +92,15 @@ const styles = {
     height: '4rem',
     fontWeight: 'bold',
     fontSize: '1.5rem',
+    textTransform: 'uppercase'
   },
   dayGrid: {
     display: 'flex',
     border: '1px solid black',
     alignItems: 'center',
     justifyContent: 'center',
-    height: '4rem'
+    height: '4rem',
+    
   },
   eventGrid: {
     p: 5,
