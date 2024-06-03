@@ -1,4 +1,4 @@
-import { Box, Button, Grid } from "@mui/material";
+import { Box, Button, Grid, Dialog, TextField, DialogContent, DialogAction, DialogTitle, Typography, Stack, ToggleButtonGroup, ToggleButton } from "@mui/material";
 import { useState } from "react";
 import { TbSquareRoundedArrowLeftFilled } from "react-icons/tb";
 import { TbSquareRoundedArrowRightFilled } from "react-icons/tb";
@@ -9,10 +9,13 @@ const Calendar = () => {
   const currentDate = new Date();
   const [currentMonth, setCurrentMonth] = useState(currentDate.getMonth());
   const [currentYear, setCurrentYear] = useState(currentDate.getFullYear())
+  const [selectedDay, setSelectedDay] = useState(currentDate);
+  const [showEventDialog, setShowEventDialog] = useState(false)
+  const [morningOrAfternoon, setMorningOrAfternoon] = useState('')
 
   const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
   const firstDayOfMonth = new Date(currentYear, currentMonth, 1).getDay();
-  // console.log(currentMonth, currentYear, daysInMonth, firstDayOfMonth);
+
   const prevMonth = () => {
     setCurrentMonth((prevMonth) => (prevMonth === 0 ? 11 : prevMonth - 1))
     setCurrentYear((prevYear) => (currentMonth === 0 ? prevYear - 1 : prevYear))
@@ -27,6 +30,24 @@ const Calendar = () => {
     setCurrentMonth(currentDate.getMonth())
     setCurrentYear(currentDate.getFullYear())
   }
+
+  const handleDayClick = (day: number) => {
+    const clickedDate = new Date(currentYear, currentMonth, day);
+    const today = new Date();
+
+    const isToday = (day1: Date, day2: Date) => {
+      return (
+        day1.getFullYear() === day2.getFullYear() &&
+        day1.getMonth() === day2.getMonth() &&
+        day1.getDate() === day2.getDate()
+      );
+    };
+
+    if (clickedDate >= today || isToday(clickedDate, today)) {
+      setSelectedDay(clickedDate);
+      setShowEventDialog(true);
+    }
+  };
 
   return (
     <>
@@ -61,7 +82,7 @@ const Calendar = () => {
                   const isToday = currentYear === currentDate.getFullYear() && currentMonth === currentDate.getMonth() && day + 1 === currentDate.getDate();
                   return (
                   <Grid item xs={1} sx={{ p: .2 }} key={day + 1}>
-                    <Box sx={isToday ? styles.currentDay : styles.dayGrid}>
+                    <Box sx={isToday ? styles.currentDay : styles.dayGrid} onClick={() => handleDayClick(day+1)}>
                       {day + 1}
                     </Box>
                   </Grid>
@@ -70,9 +91,33 @@ const Calendar = () => {
               </Grid>
             </Box>
             <Button onClick={resetDay}>Go Back to Today</Button>
+            <Dialog
+              open={showEventDialog}
+              onClose={() => setShowEventDialog(false)}
+              >
+                <DialogTitle sx={{ textAlign: 'center', color: 'white', mb: 3, backgroundColor: 'rgba(42,82,120,1.00)'}}>Add New Event</DialogTitle>
+                <DialogContent sx={{ display: 'flex', flexDirection: 'column', p: 5, gap: 2 }}>
+                  <Stack direction='row'>
+                    <TextField type='number' inputProps={{ min: 1, max: 12 }} sx={{ maxWidth: '5rem' }} />
+                    <Typography variant='h4'>:</Typography>
+                    <TextField type='number' inputProps={{ min: 0, max: 59 }} sx={{ maxWidth: '5rem' }} />
+                    <ToggleButtonGroup 
+                      value={morningOrAfternoon}
+                      onChange={(e) => setMorningOrAfternoon(e.target.value)}
+                    >
+                      <ToggleButton value="am">
+                        AM
+                      </ToggleButton>
+                      <ToggleButton value="pm">
+                        PM
+                      </ToggleButton>
+                    </ToggleButtonGroup>
+                  </Stack>
+                  <TextField fullWidth multiline rows={5} />
+                </DialogContent>
+              </Dialog>
         </Grid>
         <Grid item xs={5} sx={styles.eventGrid}>
-          <Box>{/* Event Dialog Placeholder */}</Box>
           <Box>
             <h1>Today's Events</h1>
           </Box>
