@@ -55,10 +55,14 @@ const Calendar = () => {
               
               <Grid container spacing={0} columns={7} sx={{ mb: 5 }}> {/* Calendar Date Grid */}
                 {[...Array(firstDayOfMonth).keys()].map((_, index) => (
-                  <Grid item xs={1} sx={styles.dayGrid} key={`empty-${index}`}/>
+                  <Grid item xs={1} key={`empty-${index}`}/>
                 ))}
                 {[...Array(daysInMonth).keys()].map((day) => (
-                  <Grid item xs={1} sx={styles.dayGrid} key={day + 1}>{day + 1}</Grid>
+                  <Grid item xs={1} sx={{ p: .2 }} key={day + 1}>
+                    <Box sx={styles.dayGrid}>
+                      {day + 1}
+                    </Box>
+                  </Grid>
                 ))}
               </Grid>
             </Box>
@@ -117,10 +121,16 @@ const styles = {
   },
   dayGrid: {
     display: 'flex',
-    border: '1px solid black',
+    // border: '1px solid black',
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    borderRadius: 2,
+    p: 1,
     alignItems: 'center',
     justifyContent: 'center',
     height: '4rem',
+    '&:hover': {
+      backgroundColor: 'rgba(255, 255, 255, 0.5)'
+    }
     
   },
   eventGrid: {
