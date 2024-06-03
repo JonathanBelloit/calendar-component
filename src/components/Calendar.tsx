@@ -1,4 +1,4 @@
-import { Box, Grid } from "@mui/material";
+import { Box, Button, Grid } from "@mui/material";
 import { useState } from "react";
 import { TbSquareRoundedArrowLeftFilled } from "react-icons/tb";
 import { TbSquareRoundedArrowRightFilled } from "react-icons/tb";
@@ -12,20 +12,39 @@ const Calendar = () => {
 
   const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
   const firstDayOfMonth = new Date(currentYear, currentMonth, 1).getDay();
-  console.log(currentMonth, currentYear, daysInMonth, firstDayOfMonth);
+  // console.log(currentMonth, currentYear, daysInMonth, firstDayOfMonth);
+  const prevMonth = () => {
+    setCurrentMonth((prevMonth) => (prevMonth === 0 ? 11 : prevMonth - 1))
+    setCurrentYear((prevYear) => (currentMonth === 0 ? prevYear - 1 : prevYear))
+  }
+
+  const nextMonth = () => {
+    setCurrentMonth((prevMonth) => (prevMonth === 11 ? 0 : prevMonth + 1))
+    setCurrentYear((prevYear) => (currentMonth === 11 ? prevYear + 1 : prevYear))
+  }
+
+  const resetDay = () => {
+    setCurrentMonth(currentDate.getMonth())
+    setCurrentYear(currentDate.getFullYear())
+  }
+
   return (
     <>
       <Grid container spacing={5} sx={{ backgroundColor: 'blue', minHeight: '100vh', p: 1, gap: 1, height: '100vh', display: 'flex', flexGrow: 1 }}> {/* Main wrapper */}
         <Grid item xs={6.5} sx={{ flexGrow: 1, backgroundColor: 'blue' }}> {/* Calendar wrapper */}
           <h1>Jon's Calendar</h1>
-          <Box sx={styles.dateNavigationWrapper}> {/* Calendar Date Navigation */}
-            <TbSquareRoundedArrowLeftFilled />
-              <Box sx={styles.monthYearNav}>
-                <h2>June</h2>
-                <h2>2024</h2>
-              </Box>
-            <TbSquareRoundedArrowRightFilled />
-          </Box>
+          <Grid container sx={styles.dateNavigationWrapper}> {/* Calendar Date Navigation */}
+            <Grid item xs={2} sx={{display: 'flex', justifyContent: 'center'}}>
+              <TbSquareRoundedArrowLeftFilled onClick={prevMonth} />
+            </Grid>
+              <Grid item xs={8} sx={styles.monthYearNav}>
+                <h2>{months[currentMonth]}</h2>
+                <h2>{currentYear}</h2>
+              </Grid>
+            <Grid item xs={2} sx={{display: 'flex', justifyContent: 'center'}}>
+              <TbSquareRoundedArrowRightFilled onClick={nextMonth}/>
+            </Grid>
+          </Grid>
           
             <Box sx={styles.dateGridWrapper}>
               <Grid container spacing={0} columns={7}>
@@ -43,6 +62,7 @@ const Calendar = () => {
                 ))}
               </Grid>
             </Box>
+            <Button onClick={resetDay}>Go Back to Today</Button>
         </Grid>
         <Grid item xs={5} sx={styles.eventGrid}>
           <Box>{/* Event Dialog Placeholder */}</Box>
@@ -72,6 +92,7 @@ const styles = {
   monthYearNav: {
     display: 'flex',
     flexDirection: 'row',
+    justifyContent: 'center',
     gap: 2
   },
   dateGridWrapper: {
