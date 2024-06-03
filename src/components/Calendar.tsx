@@ -57,13 +57,16 @@ const Calendar = () => {
                 {[...Array(firstDayOfMonth).keys()].map((_, index) => (
                   <Grid item xs={1} key={`empty-${index}`}/>
                 ))}
-                {[...Array(daysInMonth).keys()].map((day) => (
+                {[...Array(daysInMonth).keys()].map((day) => {
+                  const isToday = currentYear === currentDate.getFullYear() && currentMonth === currentDate.getMonth() && day + 1 === currentDate.getDate();
+                  return (
                   <Grid item xs={1} sx={{ p: .2 }} key={day + 1}>
-                    <Box sx={styles.dayGrid}>
+                    <Box sx={isToday ? styles.currentDay : styles.dayGrid}>
                       {day + 1}
                     </Box>
                   </Grid>
-                ))}
+                  )
+                })}
               </Grid>
             </Box>
             <Button onClick={resetDay}>Go Back to Today</Button>
@@ -131,7 +134,19 @@ const styles = {
     '&:hover': {
       backgroundColor: 'rgba(255, 255, 255, 0.5)'
     }
-    
+  },
+  currentDay: {
+    display: 'flex',
+    backgroundColor: 'rgba(255, 165, 0, 0.8)',
+    boxShadow: '0 0 20px 5px rgba(255, 165, 0, 0.4)',
+    borderRadius: '2rem',
+    p: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: '4rem',
+    '&:hover': {
+      backgroundColor: 'rgba(255, 165, 0, 0.9)'
+    }
   },
   eventGrid: {
     p: 5,
