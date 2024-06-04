@@ -50,6 +50,8 @@ const Calendar = () => {
     }
   };
 
+  
+
   return (
     <>
       <Grid container spacing={5} sx={{ backgroundColor: 'blue', minHeight: '100vh', p: 1, gap: 1, height: '100vh', display: 'flex', flexGrow: 1 }}> {/* Main wrapper */}
