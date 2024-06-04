@@ -1,10 +1,16 @@
-import { Box, Button, Grid, Dialog, TextField, DialogContent, DialogAction, DialogTitle, Typography, Stack, ToggleButtonGroup, ToggleButton } from "@mui/material";
+import { Box, Button, Grid, Dialog, TextField, DialogContent, DialogActions, DialogTitle, Typography, Stack, ToggleButtonGroup, ToggleButton } from "@mui/material";
 import { useState } from "react";
 import { TbSquareRoundedArrowLeftFilled } from "react-icons/tb";
 import { TbSquareRoundedArrowRightFilled } from "react-icons/tb";
 import LogoutBtn from "./auth/LogoutBtn";
+import useAuth from "../hooks/useAuth";
+import { addEvent } from "../redux/eventSlice";
+import { useAppDispatch } from "../hooks/useAppDispatch";
+import { getCurrentUserEmail } from "../hooks/useCurrentUserEmail";
 
 const Calendar = () => {
+  const dispatch = useAppDispatch();
+
   const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
   const currentDate = new Date();
@@ -12,8 +18,14 @@ const Calendar = () => {
   const [currentYear, setCurrentYear] = useState(currentDate.getFullYear())
   const [selectedDay, setSelectedDay] = useState(currentDate);
   const [showEventDialog, setShowEventDialog] = useState(false)
+  
+  // Event state variables
+  const [eventTitle, setEventTitle] = useState('')
   const [morningOrAfternoon, setMorningOrAfternoon] = useState('am')
+  const [eventDescription, setEventDescription] = useState('')
+  const [eventTime, setEventTime] = useState('');
 
+  const { user } = useAuth();
   const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
   const firstDayOfMonth = new Date(currentYear, currentMonth, 1).getDay();
 
@@ -50,8 +62,22 @@ const Calendar = () => {
     }
   };
 
+  const handleAddEvent = () => {
+    const userEmail = getCurrentUserEmail()
+    if (userEmail) {
+      dispatch(addEvent({
+        userEmail,
+        event: {
+          title: eventTitle,
+          description: eventDescription,
+          date: selectedDay.toDateString(),
+          time: eventTime,
+          ampm: morningOrAfternoon
+        }
+      }))
+    }
+  }
   
-
   return (
     <>
       <Grid container spacing={5} sx={{ backgroundColor: 'blue', minHeight: '100vh', p: 1, gap: 1, height: '100vh', display: 'flex', flexGrow: 1 }}> {/* Main wrapper */}
@@ -99,8 +125,9 @@ const Calendar = () => {
               open={showEventDialog}
               onClose={() => setShowEventDialog(false)}
               >
-                <DialogTitle sx={{ textAlign: 'center', color: 'white', mb: 3, backgroundColor: 'rgba(42,82,120,1.00)'}}>Add New Event</DialogTitle>
+                <DialogTitle sx={{ textAlign: 'center', color: 'white', mb: 4, backgroundColor: 'rgba(42,82,120,1.00)'}}>Add New Event</DialogTitle>
                 <DialogContent sx={{ display: 'flex', flexDirection: 'column', p: 5, gap: 2 }}>
+                <TextField label="Event Name" value={eventTitle} onChange={(e) => setEventTitle(e.target.value)} />
                   <Stack direction='row'>
                     <TextField type='number' inputProps={{ min: 1, max: 12 }} sx={{ maxWidth: '5rem' }} />
                     <Typography variant='h4'>:</Typography>
@@ -119,6 +146,9 @@ const Calendar = () => {
                   </Stack>
                   <TextField fullWidth multiline rows={5} />
                 </DialogContent>
+                <DialogActions>
+                  <Button onClick={handleAddEvent}>Add Event</Button>
+                </DialogActions>
               </Dialog>
         </Grid>
         <Grid item xs={12} sm={5.3} sx={styles.eventGrid}>

@@ -5,7 +5,7 @@ import { RootState } from './store';
 
 // Define the event type
 interface Event {
-  id: string;
+  id?: string;
   title: string;
   description: string;
   date: string; // Store dates as ISO strings for simplicity
