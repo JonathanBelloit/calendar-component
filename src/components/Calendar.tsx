@@ -11,7 +11,7 @@ const Calendar = () => {
   const [currentYear, setCurrentYear] = useState(currentDate.getFullYear())
   const [selectedDay, setSelectedDay] = useState(currentDate);
   const [showEventDialog, setShowEventDialog] = useState(false)
-  const [morningOrAfternoon, setMorningOrAfternoon] = useState('')
+  const [morningOrAfternoon, setMorningOrAfternoon] = useState('am')
 
   const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
   const firstDayOfMonth = new Date(currentYear, currentMonth, 1).getDay();
@@ -52,7 +52,7 @@ const Calendar = () => {
   return (
     <>
       <Grid container spacing={5} sx={{ backgroundColor: 'blue', minHeight: '100vh', p: 1, gap: 1, height: '100vh', display: 'flex', flexGrow: 1 }}> {/* Main wrapper */}
-        <Grid item xs={6.5} sx={{ flexGrow: 1, backgroundColor: 'blue' }}> {/* Calendar wrapper */}
+        <Grid item xs={12} sm={6.5}  sx={{ flexGrow: 1, backgroundColor: 'blue' }}> {/* Calendar wrapper */}
           <h1>Jon's Calendar</h1>
           <Grid container sx={styles.dateNavigationWrapper}> {/* Calendar Date Navigation */}
             <Grid item xs={2} sx={{display: 'flex', justifyContent: 'center'}}>
@@ -117,7 +117,7 @@ const Calendar = () => {
                 </DialogContent>
               </Dialog>
         </Grid>
-        <Grid item xs={5} sx={styles.eventGrid}>
+        <Grid item xs={12} sm={5.3} sx={styles.eventGrid}>
           <Box>
             <h1>Today's Events</h1>
           </Box>
@@ -169,26 +169,27 @@ const styles = {
   },
   dayGrid: {
     display: 'flex',
+    aspectRatio: '1 / 1',
     // border: '1px solid black',
     backgroundColor: 'rgba(255, 255, 255, 0.1)',
     borderRadius: 2,
     p: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    height: '4rem',
     '&:hover': {
       backgroundColor: 'rgba(255, 255, 255, 0.5)'
     }
   },
   currentDay: {
     display: 'flex',
+    aspectRatio: '1 / 1',
+    color: 'white',
     backgroundColor: 'rgba(255, 165, 0, 0.8)',
     boxShadow: '0 0 20px 5px rgba(255, 165, 0, 0.4)',
-    borderRadius: '2rem',
+    borderRadius: '50%',
     p: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    height: '4rem',
     '&:hover': {
       backgroundColor: 'rgba(255, 165, 0, 0.9)'
     }
