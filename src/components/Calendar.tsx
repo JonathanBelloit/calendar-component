@@ -1,15 +1,26 @@
 import { Box, Button, Grid, Dialog, TextField, DialogContent, DialogActions, DialogTitle, Typography, Stack, ToggleButtonGroup, ToggleButton } from "@mui/material";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { TbSquareRoundedArrowLeftFilled } from "react-icons/tb";
 import { TbSquareRoundedArrowRightFilled } from "react-icons/tb";
 import LogoutBtn from "./auth/LogoutBtn";
 import useAuth from "../hooks/useAuth";
-import { addEvent } from "../redux/eventSlice";
+import { addEvent, fetchEvents, selectEvents } from "../redux/eventSlice";
 import { useAppDispatch } from "../hooks/useAppDispatch";
 import { getCurrentUserEmail } from "../hooks/useCurrentUserEmail";
+import { useSelector } from 'react-redux'
 
 const Calendar = () => {
   const dispatch = useAppDispatch();
+  const userEmail = getCurrentUserEmail();
+  const events = useSelector(selectEvents)
+
+  useEffect(() => {
+    if (userEmail) {
+      dispatch(fetchEvents(userEmail))
+    }
+  }, [])
+
+  console.log(events)
 
   const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
@@ -76,6 +87,7 @@ const Calendar = () => {
         }
       }))
     }
+    setShowEventDialog(false)
   }
   
   return (
@@ -154,6 +166,9 @@ const Calendar = () => {
         <Grid item xs={12} sm={5.3} sx={styles.eventGrid}>
           <Box>
             <h1>Today's Events</h1>
+            {events.map((event) => (
+              <h1>{event.title}</h1>
+            ))}
           </Box>
           <Box>
             <h1>Events this Month</h1>
