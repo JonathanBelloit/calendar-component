@@ -8,9 +8,10 @@ interface Event {
   id?: string;
   title: string;
   description: string;
-  date: string; // Store dates as ISO strings for simplicity
+  dateString: string; // Store dates as ISO strings for simplicity
   time: string;
   ampm: string;
+  date: Date;
 }
 
 interface EventState {

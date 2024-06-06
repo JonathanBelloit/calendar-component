@@ -8,6 +8,7 @@ import { addEvent, fetchEvents, selectEvents } from "../redux/eventSlice";
 import { useAppDispatch } from "../hooks/useAppDispatch";
 import { getCurrentUserEmail } from "../hooks/useCurrentUserEmail";
 import { useSelector } from 'react-redux'
+import { Timestamp } from 'firebase/firestore'
 
 const Calendar = () => {
   const dispatch = useAppDispatch();
@@ -20,7 +21,7 @@ const Calendar = () => {
     }
   }, [])
 
-  console.log(events)
+  
 
   const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
@@ -35,6 +36,7 @@ const Calendar = () => {
   const [morningOrAfternoon, setMorningOrAfternoon] = useState('am')
   const [eventDescription, setEventDescription] = useState('')
   const [eventTime, setEventTime] = useState('');
+  const [targetDate, setTargetDate] = useState<Date>();
 
   const { user } = useAuth();
   const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
@@ -58,6 +60,7 @@ const Calendar = () => {
   const handleDayClick = (day: number) => {
     const clickedDate = new Date(currentYear, currentMonth, day);
     const today = new Date();
+    setTargetDate(clickedDate);
 
     const isToday = (day1: Date, day2: Date) => {
       return (
@@ -73,22 +76,37 @@ const Calendar = () => {
     }
   };
 
+  const getEventMonth = (date: any) => {
+    if (date instanceof Timestamp) {
+      return date.toDate().getMonth();
+    } else if (date instanceof Date) {
+      return date.getMonth();
+    } else {
+      // If date is a string, try to parse it as a Date
+      const parsedDate = new Date(date);
+      return !isNaN(parsedDate.getTime()) ? parsedDate.getMonth() : null;
+    }
+  };
+
   const handleAddEvent = () => {
     const userEmail = getCurrentUserEmail()
-    if (userEmail) {
+    // const eventDate = new Date(currentYear, currentMonth, targetDay)
+    if (userEmail && targetDate) {
       dispatch(addEvent({
         userEmail,
         event: {
           title: eventTitle,
           description: eventDescription,
-          date: selectedDay.toDateString(),
+          dateString: selectedDay.toDateString(),
           time: eventTime,
-          ampm: morningOrAfternoon
+          ampm: morningOrAfternoon,
+          date: targetDate
         }
       }))
     }
     setShowEventDialog(false)
   }
+  
   
   return (
     <>
@@ -166,12 +184,27 @@ const Calendar = () => {
         <Grid item xs={12} sm={5.3} sx={styles.eventGrid}>
           <Box>
             <h1>Today's Events</h1>
-            {events.map((event) => (
-              <h1>{event.title}</h1>
-            ))}
+            {events.map((event) => {
+              const today = new Date();
+              if (event.date === today) {
+                return (
+                <h1>{event.title}</h1>
+                )
+              }
+            })}
           </Box>
           <Box>
             <h1>Events this Month</h1>
+            {events.map((event) => {
+              console.log(event.date)
+              const today = new Date();
+              const eventMonth = getEventMonth(event.date);
+              if (today.getMonth() === eventMonth) {
+              return (
+                <h1 key={event.id}>{event.title}</h1>
+              )
+            }
+            })}
           </Box>
         </Grid>
       </Grid>
