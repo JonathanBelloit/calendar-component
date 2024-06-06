@@ -1,4 +1,4 @@
-import Calendar from "./components/Calendar";
+import Calendar from "./components/calendar/Calendar";
 import Login from "./components/auth/Login";
 import useAuth from './hooks/useAuth';
 

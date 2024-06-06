@@ -2,11 +2,10 @@ import { Box, Button, Grid, Dialog, TextField, DialogContent, DialogActions, Dia
 import { useState, useEffect } from "react";
 import { TbSquareRoundedArrowLeftFilled } from "react-icons/tb";
 import { TbSquareRoundedArrowRightFilled } from "react-icons/tb";
-import LogoutBtn from "./auth/LogoutBtn";
-import useAuth from "../hooks/useAuth";
-import { addEvent, fetchEvents, selectEvents } from "../redux/eventSlice";
-import { useAppDispatch } from "../hooks/useAppDispatch";
-import { getCurrentUserEmail } from "../hooks/useCurrentUserEmail";
+import LogoutBtn from "../auth/LogoutBtn";
+import { addEvent, fetchEvents, selectEvents } from "../../redux/eventSlice";
+import { useAppDispatch } from "../../hooks/useAppDispatch";
+import { getCurrentUserEmail } from "../../hooks/useCurrentUserEmail";
 import { useSelector } from 'react-redux'
 import { Timestamp } from 'firebase/firestore'
 
@@ -19,9 +18,7 @@ const Calendar = () => {
     if (userEmail) {
       dispatch(fetchEvents(userEmail))
     }
-  }, [])
-
-  
+  }, [dispatch, events, userEmail])
 
   const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
@@ -35,10 +32,10 @@ const Calendar = () => {
   const [eventTitle, setEventTitle] = useState('')
   const [morningOrAfternoon, setMorningOrAfternoon] = useState('am')
   const [eventDescription, setEventDescription] = useState('')
-  const [eventTime, setEventTime] = useState('');
+  const [eventHour, setEventHour] = useState('');
+  const [eventMinute, setEventMinute] = useState('');
   const [targetDate, setTargetDate] = useState<Date>();
 
-  const { user } = useAuth();
   const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
   const firstDayOfMonth = new Date(currentYear, currentMonth, 1).getDay();
 
@@ -76,7 +73,7 @@ const Calendar = () => {
     }
   };
 
-  const getEventMonth = (date: any) => {
+  const getEventMonth = (date: Date | string | Timestamp) => {
     if (date instanceof Timestamp) {
       return date.toDate().getMonth();
     } else if (date instanceof Date) {
@@ -89,20 +86,24 @@ const Calendar = () => {
   };
 
   const handleAddEvent = () => {
-    const userEmail = getCurrentUserEmail()
     // const eventDate = new Date(currentYear, currentMonth, targetDay)
     if (userEmail && targetDate) {
+      const timeString = `${eventHour.padStart(2, "0")}:${eventMinute.padStart(2, "0")} ${morningOrAfternoon.toUpperCase()}`
       dispatch(addEvent({
         userEmail,
         event: {
           title: eventTitle,
           description: eventDescription,
           dateString: selectedDay.toDateString(),
-          time: eventTime,
+          time: timeString,
           ampm: morningOrAfternoon,
           date: targetDate
         }
       }))
+      setEventTitle('')
+      setEventDescription('')
+      setEventMinute('')
+      setEventHour('')
     }
     setShowEventDialog(false)
   }
@@ -159,12 +160,27 @@ const Calendar = () => {
                 <DialogContent sx={{ display: 'flex', flexDirection: 'column', p: 5, gap: 2 }}>
                 <TextField label="Event Name" value={eventTitle} onChange={(e) => setEventTitle(e.target.value)} />
                   <Stack direction='row'>
-                    <TextField type='number' inputProps={{ min: 1, max: 12 }} sx={{ maxWidth: '5rem' }} />
+                    <TextField 
+                      type='number' 
+                      label="Hour"
+                      value={eventHour}
+                      onChange={(e) => setEventHour(e.target.value)}
+                      inputProps={{ min: 1, max: 12 }} 
+                      sx={{ maxWidth: '5rem' }} 
+                    />
                     <Typography variant='h4'>:</Typography>
-                    <TextField type='number' inputProps={{ min: 0, max: 59 }} sx={{ maxWidth: '5rem' }} />
+                    <TextField 
+                      type='number' 
+                      label="min"
+                      value={eventMinute}
+                      onChange={(e) => setEventMinute(e.target.value)}
+                      inputProps={{ min: 0, max: 59 }} 
+                      sx={{ maxWidth: '5rem' }} 
+                    />
                     <ToggleButtonGroup 
                       value={morningOrAfternoon}
-                      onChange={(e) => setMorningOrAfternoon(e.target.value)}
+                      exclusive
+                      onChange={(_e, newValue) => setMorningOrAfternoon(newValue)}
                     >
                       <ToggleButton value="am">
                         AM
@@ -174,7 +190,14 @@ const Calendar = () => {
                       </ToggleButton>
                     </ToggleButtonGroup>
                   </Stack>
-                  <TextField fullWidth multiline rows={5} />
+              <TextField
+                fullWidth
+                multiline
+                rows={5}
+                value={eventDescription}
+                onChange={(e) => setEventDescription(e.target.value)}
+          />
+
                 </DialogContent>
                 <DialogActions>
                   <Button onClick={handleAddEvent}>Add Event</Button>
