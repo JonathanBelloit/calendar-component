@@ -2,13 +2,14 @@ import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { db } from '../config/firebase'; // Adjust the import according to your Firebase setup
 import { collection, addDoc, getDocs, updateDoc, deleteDoc, doc, query } from 'firebase/firestore';
 import { RootState } from './store';
+import { Timestamp } from 'firebase/firestore'
 
 // Define the event type
 interface Event {
   id?: string;
   title: string;
   description: string;
-  date: Date;
+  date: string;
   dateString: string; // Store dates as ISO strings for simplicity
   time: string;
 }
@@ -36,12 +37,12 @@ export const fetchEvents = createAsyncThunk<Event[], string>(
     querySnapshot.forEach((doc) => {
       const data = doc.data();
       if (data.date) {
-        events.push({ 
-          id: doc.id, 
+        events.push({
+          id: doc.id,
           title: data.title,
           description: data.description,
-          date: data.date.toDate(), // Convert Timestamp to Date
-          dateString: data.date.toDate().toISOString(), // Convert to ISO string
+          date: data.date instanceof Timestamp ? data.date.toDate().toISOString() : new Date(data.date).toISOString(), // Convert to ISO string
+          dateString: data.date instanceof Timestamp ? data.date.toDate().toISOString() : new Date(data.date).toISOString(), // Convert to ISO string
           time: data.time,
         } as Event);
       }
@@ -61,9 +62,10 @@ export const fetchEvents = createAsyncThunk<Event[], string>(
 export const addEvent = createAsyncThunk<Event, { userEmail: string; event: Omit<Event, 'id'> }>(
   'events/addEvent',
   async ({ userEmail, event }) => {
-    const eventWithISODate = { 
-      ...event, 
-      dateString: event.date.toISOString() // Format date as ISO string
+    const eventWithISODate = {
+      ...event,
+      date: new Date(event.date).toISOString(), // Convert date to ISO string
+      dateString: new Date(event.date).toISOString() // Convert date to ISO string
     };
     const docRef = await addDoc(collection(db, `users/${userEmail}/calendarEvents`), eventWithISODate);
     return { id: docRef.id, ...eventWithISODate };
@@ -73,8 +75,13 @@ export const addEvent = createAsyncThunk<Event, { userEmail: string; event: Omit
 export const updateEvent = createAsyncThunk<void, { userEmail: string; event: Event }>(
   'events/updateEvent',
   async ({ userEmail, event }) => {
+    const eventWithISODate = {
+      ...event,
+      date: new Date(event.date).toISOString(), // Convert date to ISO string
+      dateString: new Date(event.date).toISOString() // Convert date to ISO string
+    };
     const eventDoc = doc(db, `users/${userEmail}/calendarEvents`, event.id!);
-    await updateDoc(eventDoc, { ...event });
+    await updateDoc(eventDoc, eventWithISODate);
   }
 );
 
