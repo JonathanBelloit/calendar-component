@@ -8,10 +8,9 @@ interface Event {
   id?: string;
   title: string;
   description: string;
+  date: Date;
   dateString: string; // Store dates as ISO strings for simplicity
   time: string;
-  ampm: string;
-  date: Date;
 }
 
 interface EventState {
@@ -35,26 +34,48 @@ export const fetchEvents = createAsyncThunk<Event[], string>(
     const querySnapshot = await getDocs(q);
     const events: Event[] = [];
     querySnapshot.forEach((doc) => {
-      events.push({ id: doc.id, ...doc.data() } as Event);
+      const data = doc.data();
+      if (data.date) {
+        events.push({ 
+          id: doc.id, 
+          title: data.title,
+          description: data.description,
+          date: data.date.toDate(), // Convert Timestamp to Date
+          dateString: data.date.toDate().toISOString(), // Convert to ISO string
+          time: data.time,
+        } as Event);
+      }
     });
     return events;
   }
 );
 
+// export const addEvent = createAsyncThunk<Event, { userEmail: string; event: Omit<Event, 'id'> }>(
+//   'events/addEvent',
+//   async ({ userEmail, event }) => {
+//     const docRef = await addDoc(collection(db, `users/${userEmail}/calendarEvents`), event);
+//     return { id: docRef.id, ...event };
+//   }
+// );
+
 export const addEvent = createAsyncThunk<Event, { userEmail: string; event: Omit<Event, 'id'> }>(
   'events/addEvent',
   async ({ userEmail, event }) => {
-    const docRef = await addDoc(collection(db, `users/${userEmail}/calendarEvents`), event);
-    return { id: docRef.id, ...event };
+    const eventWithISODate = { 
+      ...event, 
+      dateString: event.date.toISOString() // Format date as ISO string
+    };
+    const docRef = await addDoc(collection(db, `users/${userEmail}/calendarEvents`), eventWithISODate);
+    return { id: docRef.id, ...eventWithISODate };
   }
 );
 
 export const updateEvent = createAsyncThunk<void, { userEmail: string; event: Event }>(
   'events/updateEvent',
   async ({ userEmail, event }) => {
-  const eventDoc = doc(db, `users/${userEmail}/calendarEvents`, event.id);
-  await updateDoc(eventDoc, { ...event });
-}
+    const eventDoc = doc(db, `users/${userEmail}/calendarEvents`, event.id!);
+    await updateDoc(eventDoc, { ...event });
+  }
 );
 
 export const deleteEvent = createAsyncThunk<void, { userEmail: string; eventId: string }>(

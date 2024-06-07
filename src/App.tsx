@@ -4,7 +4,6 @@ import useAuth from './hooks/useAuth';
 
 function App() {
   const { user, loading } = useAuth()
-  console.log(user)
   return (
     <>
       { loading && <h1>Loading...</h1>}
