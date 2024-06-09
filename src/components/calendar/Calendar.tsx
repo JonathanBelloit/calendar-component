@@ -1,25 +1,26 @@
-import { Box, Button, Grid, Dialog, TextField, DialogContent, DialogActions, DialogTitle, Typography, Stack, ToggleButtonGroup, ToggleButton } from "@mui/material";
+import { Box, Button, Grid, Dialog, TextField, DialogContent, DialogActions, DialogTitle, Typography, Stack, ToggleButtonGroup, ToggleButton, Badge } from "@mui/material";
 import { useState, useEffect } from "react";
 import { TbSquareRoundedArrowLeftFilled } from "react-icons/tb";
 import { TbSquareRoundedArrowRightFilled } from "react-icons/tb";
 import LogoutBtn from "../auth/LogoutBtn";
-import { addEvent, fetchEvents, selectEvents } from "../../redux/eventSlice";
+import { useSelector } from "react-redux";
+import { addEvent, selectEvents, fetchEvents } from "../../redux/eventSlice";
 import { useAppDispatch } from "../../hooks/useAppDispatch";
 import { getCurrentUserEmail } from "../../hooks/useCurrentUserEmail";
-import { useSelector } from 'react-redux'
 import { Timestamp } from 'firebase/firestore'
 import EventList from "./EventList";
+import { dailyEventCount } from '../../utils/eventUtils';
 
 const Calendar = () => {
   const dispatch = useAppDispatch();
   const userEmail = getCurrentUserEmail();
-  // const events = useSelector(selectEvents)
+  const events = useSelector(selectEvents)
 
-  // useEffect(() => {
-  //   if (userEmail) {
-  //     dispatch(fetchEvents(userEmail))
-  //   }
-  // }, [dispatch, events, userEmail])
+  useEffect(() => {
+    if (userEmail) {
+      dispatch(fetchEvents(userEmail))
+    }
+  }, [dispatch, userEmail])
   // console.log(events)
 
   const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
@@ -75,18 +76,6 @@ const Calendar = () => {
     }
   };
 
-  const getEventMonth = (date: Date | string | Timestamp) => {
-    if (date instanceof Timestamp) {
-      return date.toDate().getMonth();
-    } else if (date instanceof Date) {
-      return date.getMonth();
-    } else {
-      // If date is a string, try to parse it as a Date
-      const parsedDate = new Date(date);
-      return !isNaN(parsedDate.getTime()) ? parsedDate.getMonth() : null;
-    }
-  };
-
   const handleAddEvent = () => {
     // const eventDate = new Date(currentYear, currentMonth, targetDay)
     if (userEmail && targetDate) {
@@ -109,7 +98,8 @@ const Calendar = () => {
     setShowEventDialog(false)
   }
   
-  
+  const eventsPerDay = dailyEventCount(events);
+
   return (
     <>
       <Grid container spacing={5} sx={{ backgroundColor: 'blue', minHeight: '100vh', p: 1, gap: 1, height: '100vh', display: 'flex', flexGrow: 1 }}> {/* Main wrapper */}
@@ -142,8 +132,11 @@ const Calendar = () => {
                 ))}
                 {[...Array(daysInMonth).keys()].map((day) => {
                   const isToday = currentYear === currentDate.getFullYear() && currentMonth === currentDate.getMonth() && day + 1 === currentDate.getDate();
+                  const dateKey = new Date(currentYear, currentMonth, day + 1).toDateString();
+                  const eventCount = eventsPerDay[dateKey] || 0;
                   return (
                   <Grid item xs={1} sx={{ p: .2 }} key={day + 1}>
+                    <Badge badgeContent={eventCount} color="primary"></Badge>
                     <Box sx={isToday ? styles.currentDay : styles.dayGrid} onClick={() => handleDayClick(day+1)}>
                       {day + 1}
                     </Box>
@@ -207,31 +200,6 @@ const Calendar = () => {
         </Grid>
         <Grid item xs={12} sm={5.3} sx={styles.eventGrid}>
           <EventList />
-          {/* <Box>
-            <h1>Today's Events</h1>
-            {events.map((event) => {
-              const today = new Date();
-              const eventCompareDate = new Date(event.dateString)
-              console.log(eventCompareDate)
-              if (eventCompareDate === today) {
-                return (
-                <h1>{event.title}</h1>
-                )
-              }
-            })}
-          </Box>
-          <Box>
-            <h1>Events this Month</h1>
-            {events.map((event) => {
-              const today = new Date();
-              const eventMonth = getEventMonth(event.dateString);
-              if (today.getMonth() === eventMonth) {
-              return (
-                <h1 key={event.id}>{event.title}</h1>
-              )
-            }
-            })}
-          </Box> */}
         </Grid>
       </Grid>
     </>
