@@ -88,6 +88,7 @@ const Calendar = () => {
           date: targetDate,
           dateString: selectedDay.toDateString(),
           time: timeString,
+          user: userEmail
         }
       }))
       setEventTitle('')

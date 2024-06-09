@@ -2,8 +2,10 @@ import { Box, Paper, Typography } from '@mui/material'
 import { useState } from 'react'
 import { formatDate } from '../../utils/dateUtils';
 import { IoCloseOutline } from "react-icons/io5";
+import EventItemFooter from './EventItemFooter';
 
-const EventItem = ({ event }: { event: { id?: string; title: string; date: string; time: string; description: string;} }) => {
+
+const EventItem = ({ event }: { event: { id?: string; title: string; date: string; time: string; description: string; user?: string} }) => {
   console.log(event)
   const [showDetails, setShowDetails] = useState(false)
   const handleClose = (e: { stopPropagation: () => void; }) => {
@@ -29,11 +31,12 @@ const EventItem = ({ event }: { event: { id?: string; title: string; date: strin
             <Typography variant='h5'>{event.time}</Typography>
           </Box>
           <Box>
-            <Paper sx={{ mx: 5 }}>
+            <Paper sx={{ mx: 5, my: 5 }}>
               {event.description}
             </Paper>
+            <Typography>Added by: {event.user}</Typography>
           </Box>
-          <Typography variant='h5'>{event.description}</Typography>
+          <EventItemFooter userEmail={event.user} eventId={event.id} />
         </Box>
       )}
     </Box>

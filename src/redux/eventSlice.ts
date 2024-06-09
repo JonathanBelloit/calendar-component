@@ -12,6 +12,7 @@ interface Event {
   date: string;
   dateString: string; // Store dates as ISO strings for simplicity
   time: string;
+  user: string;
 }
 
 interface EventState {
@@ -44,6 +45,7 @@ export const fetchEvents = createAsyncThunk<Event[], string>(
           date: data.date instanceof Timestamp ? data.date.toDate().toISOString() : new Date(data.date).toISOString(), // Convert to ISO string
           dateString: data.date instanceof Timestamp ? data.date.toDate().toISOString() : new Date(data.date).toISOString(), // Convert to ISO string
           time: data.time,
+          user: userEmail
         } as Event);
       }
     });
@@ -150,11 +152,8 @@ const eventSlice = createSlice({
       })
       .addCase(
         deleteEvent.fulfilled,
-        (state, action: PayloadAction<{ eventId: string }>) => {
+        (state) => {
           state.loading = false;
-          state.events = state.events.filter(
-            (event) => event.id !== action.payload.eventId
-          );
         }
       )
       .addCase(deleteEvent.rejected, (state, action) => {
