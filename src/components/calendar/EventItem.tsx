@@ -5,38 +5,56 @@ import { IoCloseOutline } from "react-icons/io5";
 import EventItemFooter from './EventItemFooter';
 
 
-const EventItem = ({ event }: { event: { id?: string; title: string; date: string; time: string; description: string; user?: string} }) => {
-  console.log(event)
-  const [showDetails, setShowDetails] = useState(false)
-  const handleClose = (e: { stopPropagation: () => void; }) => {
+const EventItem = ({
+  event,
+}: {
+  event: {
+    id?: string;
+    title: string;
+    date: string;
+    time: string;
+    description: string;
+    user?: string;
+  };
+}) => {
+  console.log(event);
+  const [showDetails, setShowDetails] = useState(false);
+  const handleClose = (e: { stopPropagation: () => void }) => {
     e.stopPropagation();
-    setShowDetails(false)
-  }
+    setShowDetails(false);
+  };
   return (
     <Box sx={boxStyle} key={event.id} onClick={() => setShowDetails(true)}>
-      { !showDetails && (
-        <Typography variant="h5">
-          {event.title}
-        </Typography>
-        )
-      }
-      { showDetails && (
+      {!showDetails && <Typography variant="h5">{event.title}</Typography>}
+      {showDetails && (
         <Box>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', px: 1}}>
-            <Typography variant='h5'>{event.title}</Typography>
-            <IoCloseOutline onClick={handleClose} fontSize={'2rem'} style={{ zIndex: 2, cursor: 'pointer' }}/>
+          <Box sx={{ display: "flex", justifyContent: "space-between", px: 1 }}>
+            <Typography variant="h5">{event.title}</Typography>
+            <IoCloseOutline
+              onClick={handleClose}
+              fontSize={"2rem"}
+              style={{ zIndex: 2, cursor: "pointer" }}
+            />
           </Box>
-          <Box sx={{ display: 'flex', justifyContent: 'space-evenly', backgroundColor: 'blue', my: 2}}>
-            <Typography variant='h5'>{formatDate(event.date)}</Typography>
-            <Typography variant='h5'>{event.time}</Typography>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-evenly",
+              backgroundColor: "blue",
+              my: 2,
+            }}
+          >
+            <Typography variant="h5">{formatDate(event.date)}</Typography>
+            <Typography variant="h5">{event.time}</Typography>
           </Box>
           <Box>
-            <Paper sx={{ mx: 5, my: 5 }}>
-              {event.description}
-            </Paper>
-            <Typography>Added by: {event.user}</Typography>
+            <Paper sx={{ mx: 5, my: 5 }}>{event.description}</Paper>
+            <Typography>Added by: {event.user || ""}</Typography>
           </Box>
-          <EventItemFooter userEmail={event.user} eventId={event.id} />
+          <EventItemFooter
+            userEmail={event.user || ""}
+            eventId={event.id || ""}
+          />
         </Box>
       )}
     </Box>

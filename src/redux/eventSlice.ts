@@ -9,7 +9,7 @@ interface Event {
   id?: string;
   title: string;
   description: string;
-  date: string;
+  date: string | Date;
   dateString: string; // Store dates as ISO strings for simplicity
   time: string;
   user: string;

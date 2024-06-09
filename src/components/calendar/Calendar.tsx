@@ -7,7 +7,7 @@ import { useSelector } from "react-redux";
 import { addEvent, selectEvents, fetchEvents } from "../../redux/eventSlice";
 import { useAppDispatch } from "../../hooks/useAppDispatch";
 import { getCurrentUserEmail } from "../../hooks/useCurrentUserEmail";
-import { Timestamp } from 'firebase/firestore'
+// import { Timestamp } from 'firebase/firestore'
 import EventList from "./EventList";
 import { dailyEventCount } from '../../utils/eventUtils';
 
@@ -137,8 +137,8 @@ const Calendar = () => {
                   const eventCount = eventsPerDay[dateKey] || 0;
                   return (
                   <Grid item xs={1} sx={{ p: .2 }} key={day + 1}>
-                    <Badge badgeContent={eventCount} color="primary"></Badge>
                     <Box sx={isToday ? styles.currentDay : styles.dayGrid} onClick={() => handleDayClick(day+1)}>
+                      <Badge badgeContent={eventCount} color="primary" sx={{ display: 'flex', position: 'absolute', right: 10, top: 10, zIndex: 20}}></Badge>
                       {day + 1}
                     </Box>
                   </Grid>
@@ -246,6 +246,7 @@ const styles = {
   },
   dayGrid: {
     display: 'flex',
+    position: 'relative',
     aspectRatio: '1 / 1',
     // border: '1px solid black',
     backgroundColor: 'rgba(255, 255, 255, 0.1)',
