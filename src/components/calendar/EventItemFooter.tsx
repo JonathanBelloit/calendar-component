@@ -3,11 +3,12 @@ import React from 'react'
 import { deleteEvent } from '../../redux/eventSlice'
 import { useAppDispatch } from '../../hooks/useAppDispatch'
 
-const EventItemFooter = ({ userEmail, eventId }:{userEmail: string, eventId: string}) => {
+const EventItemFooter = ({ userEmail, eventId, setEventTrigger }:{userEmail: string, eventId: string, setEventTrigger: React.Dispatch<React.SetStateAction<boolean>>}) => {
   const dispatch = useAppDispatch();
 
   const handleDelete = () => {
     dispatch(deleteEvent({userEmail, eventId}))
+    setEventTrigger(true)
   }
 
   return (

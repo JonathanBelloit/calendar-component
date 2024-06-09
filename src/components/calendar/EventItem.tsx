@@ -7,6 +7,7 @@ import EventItemFooter from './EventItemFooter';
 
 const EventItem = ({
   event,
+  setEventTrigger,
 }: {
   event: {
     id?: string;
@@ -16,6 +17,7 @@ const EventItem = ({
     description: string;
     user?: string;
   };
+  setEventTrigger: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   console.log(event);
   const [showDetails, setShowDetails] = useState(false);
@@ -54,6 +56,7 @@ const EventItem = ({
           <EventItemFooter
             userEmail={event.user || ""}
             eventId={event.id || ""}
+            setEventTrigger={setEventTrigger}
           />
         </Box>
       )}

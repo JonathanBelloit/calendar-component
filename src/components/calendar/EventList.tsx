@@ -3,27 +3,27 @@ import { useAppDispatch } from "../../hooks/useAppDispatch";
 import { fetchEvents, selectEvents } from "../../redux/eventSlice";
 import { useSelector } from "react-redux";
 import { getCurrentUserEmail } from "../../hooks/useCurrentUserEmail";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import EventItem from "./EventItem";
 
 const EventList = () => {
   const dispatch = useAppDispatch();
   const userEmail = getCurrentUserEmail();
   const events = useSelector(selectEvents);
+  const [eventTrigger, setEventTrigger] = useState(false)
 
   useEffect(() => {
-    const fetchEventsIfUserEmailAvailable = async () => {
-      if (userEmail) {
-        dispatch(fetchEvents(userEmail));
-      } else {
-        // Handle the case when the user's email is not available
-        console.log("User's email is not available. Please log in again.");
-        // You can also show a message to the user or redirect them to the login page
-      }
-    };
+  const fetchEventsIfUserEmailAvailable = async () => {
+    if (userEmail) {
+      dispatch(fetchEvents(userEmail));
+      setEventTrigger(false);
+    } else {
+      console.log("User's email is not available. Please log in again.");
+    }
+  };
 
-    fetchEventsIfUserEmailAvailable();
-  }, [dispatch, userEmail]);
+  fetchEventsIfUserEmailAvailable();
+}, [dispatch, userEmail, eventTrigger]);
 
   const isToday = (dateString: string) => {
     const eventDate = new Date(dateString);
@@ -61,7 +61,7 @@ const EventList = () => {
       <Box sx={{ backgroundColor: 'rgba(255,255,255, 0.2)', p: 1, borderRadius: 4 }}>
         <Typography variant="h4">This Month's Events:</Typography>
         {events.filter(event => isThisMonth(event.date)).map(event => (
-          <EventItem event={event} />
+          <EventItem event={event} setEventTrigger={setEventTrigger}/>
         ))}
       </Box>
     </>
