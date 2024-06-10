@@ -19,7 +19,6 @@ const EventItem = ({
   };
   setEventTrigger: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
-  console.log(event);
   const [showDetails, setShowDetails] = useState(false);
   const handleClose = (e: { stopPropagation: () => void }) => {
     e.stopPropagation();

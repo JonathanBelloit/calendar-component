@@ -8,8 +8,8 @@ import { addEvent, selectEvents, fetchEvents } from "../../redux/eventSlice";
 import { useAppDispatch } from "../../hooks/useAppDispatch";
 import { getCurrentUserEmail } from "../../hooks/useCurrentUserEmail";
 // import { Timestamp } from 'firebase/firestore'
-import EventList from "./EventList";
 import { dailyEventCount } from '../../utils/eventUtils';
+import InfoPanel from "./InfoPanel";
 
 const Calendar = () => {
   const dispatch = useAppDispatch();
@@ -21,7 +21,6 @@ const Calendar = () => {
       dispatch(fetchEvents(userEmail))
     }
   }, [dispatch, userEmail])
-  // console.log(events)
 
   const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
@@ -103,7 +102,7 @@ const Calendar = () => {
 
   return (
     <>
-      <Grid container spacing={5} sx={{ backgroundColor: 'blue', minHeight: '100vh', p: 1, gap: 1, height: '100vh', display: 'flex', flexGrow: 1 }}> {/* Main wrapper */}
+      <Grid container spacing={0} sx={{ backgroundColor: 'blue', minHeight: '100vh', p: 1, gap: 1, height: '100vh', display: 'flex', flexGrow: 1 }}> {/* Main wrapper */}
         <Grid item xs={12} sm={6.5}  sx={{ flexGrow: 1, backgroundColor: 'blue' }}> {/* Calendar wrapper */}
           <h1>Jon's Calendar</h1>
           <LogoutBtn />
@@ -119,14 +118,12 @@ const Calendar = () => {
               <TbSquareRoundedArrowRightFilled onClick={nextMonth}/>
             </Grid>
           </Grid>
-          
             <Box sx={styles.dateGridWrapper}>
               <Grid container spacing={0} columns={7}>
                 {daysOfWeek.map((day) => {
                   return <Grid item xs={1} sx={styles.dayGridTitle} key={day}>{day}</Grid>
                 })}
               </Grid>
-              
               <Grid container spacing={0} columns={7} sx={{ mb: 5 }}> {/* Calendar Date Grid */}
                 {[...Array(firstDayOfMonth).keys()].map((_, index) => (
                   <Grid item xs={1} key={`empty-${index}`}/>
@@ -192,15 +189,14 @@ const Calendar = () => {
                 value={eventDescription}
                 onChange={(e) => setEventDescription(e.target.value)}
           />
-
                 </DialogContent>
                 <DialogActions>
                   <Button onClick={handleAddEvent}>Add Event</Button>
                 </DialogActions>
               </Dialog>
         </Grid>
-        <Grid item xs={12} sm={5.3} sx={styles.eventGrid}>
-          <EventList />
+        <Grid item xs={12} sm={5.4} sx={styles.eventGrid}>
+          <InfoPanel />
         </Grid>
       </Grid>
     </>
@@ -232,7 +228,6 @@ const styles = {
     justifyItems: "center",
     border: '1px solid black',
     borderRadius: '2rem',
-    // gap: 1,
     width: "100%",
   },
   dayGridTitle: {
@@ -248,7 +243,6 @@ const styles = {
     display: 'flex',
     position: 'relative',
     aspectRatio: '1 / 1',
-    // border: '1px solid black',
     backgroundColor: 'rgba(255, 255, 255, 0.1)',
     borderRadius: 2,
     p: 1,
@@ -273,7 +267,6 @@ const styles = {
     }
   },
   eventGrid: {
-    p: 5,
-    border: '1px solid black',
+    border: '1px solid white',
   }
 }
