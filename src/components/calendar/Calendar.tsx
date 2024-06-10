@@ -10,6 +10,8 @@ import { getCurrentUserEmail } from "../../hooks/useCurrentUserEmail";
 // import { Timestamp } from 'firebase/firestore'
 import { dailyEventCount } from '../../utils/eventUtils';
 import InfoPanel from "./InfoPanel";
+import { RiShareBoxFill } from "react-icons/ri";
+import { GrUserSettings } from "react-icons/gr";
 
 const Calendar = () => {
   const dispatch = useAppDispatch();
@@ -104,7 +106,15 @@ const Calendar = () => {
     <>
       <Grid container spacing={0} sx={{ backgroundColor: 'blue', minHeight: '100vh', p: 1, gap: 1, height: '100vh', display: 'flex', flexGrow: 1 }}> {/* Main wrapper */}
         <Grid item xs={12} sm={6.5}  sx={{ flexGrow: 1, backgroundColor: 'blue' }}> {/* Calendar wrapper */}
-          <h1>Jon's Calendar</h1>
+          <Stack direction='row' sx={{ pr: 3 }}>
+            <Box sx={{ display: 'flex', flexGrow: 1 }}>
+              <h1>{userEmail}'s Calendar</h1>
+            </Box>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+              <RiShareBoxFill size={30}/>
+              <GrUserSettings size={30} />
+            </Box>
+          </Stack>
           <LogoutBtn />
           <Grid container sx={styles.dateNavigationWrapper}> {/* Calendar Date Navigation */}
             <Grid item xs={2} sx={{display: 'flex', justifyContent: 'center'}}>
