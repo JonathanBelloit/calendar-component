@@ -7,7 +7,7 @@ const InfoPanel = () => {
   const [infoDisplay, setInfoDisplay] = useState('events')
 
   const handleChange = (
-    event: React.MouseEvent,
+    _event: React.MouseEvent,
     newInfoDisplay: string,
   ) => {
     setInfoDisplay(newInfoDisplay)
@@ -33,7 +33,7 @@ const InfoPanel = () => {
           </ToggleButtonGroup>
         </Stack>
       </Box>
-      <Box>
+      <Box sx={{ p: 2 }}>
         { infoDisplay === 'events' && <EventList />}
         { infoDisplay === 'schedule' && <DailySchedule />}
       </Box>

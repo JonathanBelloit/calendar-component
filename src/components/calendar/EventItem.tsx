@@ -53,8 +53,7 @@ const EventItem = ({
             <Typography>Added by: {event.user || ""}</Typography>
           </Box>
           <EventItemFooter
-            userEmail={event.user || ""}
-            eventId={event.id || ""}
+            event={event}
             setEventTrigger={setEventTrigger}
           />
         </Box>

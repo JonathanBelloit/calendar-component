@@ -1,4 +1,4 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Stack, Typography } from "@mui/material";
 import { useAppDispatch } from "../../hooks/useAppDispatch";
 import { fetchEvents, selectEvents } from "../../redux/eventSlice";
 import { useSelector } from "react-redux";
@@ -45,7 +45,7 @@ const EventList = () => {
   };
 
   return (
-    <>
+    <Stack gap={1}>
       <Box sx={{ backgroundColor: 'rgba(255,255,255, 0.2)', p: 1, borderRadius: 3 }}>
         <Typography variant="h4">Today's Events:</Typography>
         {events.filter(event => isToday(event.date)).map(event => (
@@ -64,7 +64,7 @@ const EventList = () => {
           <EventItem event={event} setEventTrigger={setEventTrigger}/>
         ))}
       </Box>
-    </>
+    </Stack>
   );
 };
 
