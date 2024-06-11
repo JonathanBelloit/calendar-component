@@ -5,8 +5,10 @@ import { TbSquareRoundedArrowRightFilled } from "react-icons/tb";
 import LogoutBtn from "../auth/LogoutBtn";
 import { useSelector } from "react-redux";
 import { addEvent, selectEvents, fetchEvents } from "../../redux/eventSlice";
+import { fetchUserData, selectUserData } from "../../redux/userSlice";
 import { useAppDispatch } from "../../hooks/useAppDispatch";
 import { getCurrentUserEmail } from "../../hooks/useCurrentUserEmail";
+import UserProfileModal from "../user/UserProfileModal";
 // import { Timestamp } from 'firebase/firestore'
 import { dailyEventCount } from '../../utils/eventUtils';
 import InfoPanel from "./InfoPanel";
@@ -17,10 +19,12 @@ const Calendar = () => {
   const dispatch = useAppDispatch();
   const userEmail = getCurrentUserEmail();
   const events = useSelector(selectEvents)
+  const userData = useSelector(selectUserData)
 
   useEffect(() => {
     if (userEmail) {
       dispatch(fetchEvents(userEmail))
+      dispatch(fetchUserData(userEmail))
     }
   }, [dispatch, userEmail])
 
@@ -32,6 +36,8 @@ const Calendar = () => {
   const [selectedDay, setSelectedDay] = useState(currentDate);
   const [showEventDialog, setShowEventDialog] = useState(false)
   
+  // Profile Modal state variables
+  const [profileModalOpen, setProfileModalOpen] = useState(false)
   // Event state variables
   const [eventTitle, setEventTitle] = useState('')
   const [morningOrAfternoon, setMorningOrAfternoon] = useState('am')
@@ -104,6 +110,7 @@ const Calendar = () => {
 
   return (
     <>
+      <UserProfileModal setProfileModalOpen={setProfileModalOpen} profileModalOpen={profileModalOpen} userEmail={userEmail}/>
       <Grid container spacing={0} sx={{ backgroundColor: 'blue', minHeight: '100vh', p: 1, gap: 1, height: '100vh', display: 'flex', flexGrow: 1 }}> {/* Main wrapper */}
         <Grid item xs={12} sm={6.5}  sx={{ flexGrow: 1, backgroundColor: 'blue' }}> {/* Calendar wrapper */}
           <Stack direction='row' sx={{ pr: 3 }}>
@@ -112,7 +119,7 @@ const Calendar = () => {
             </Box>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
               <RiShareBoxFill size={30}/>
-              <GrUserSettings size={30} />
+              <GrUserSettings size={30} onClick={() => setProfileModalOpen(true)}/>
             </Box>
           </Stack>
           <LogoutBtn />
