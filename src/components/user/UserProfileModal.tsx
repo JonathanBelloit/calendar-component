@@ -37,10 +37,12 @@ const UserProfileModal = ({
   console.log(userData)
   return (
     <>
-      <Modal open={profileModalOpen} onClose={handleClose}>
-        <Box sx={{ backgroundColor: 'white'}}>
-          <Box>
+      <Modal open={profileModalOpen} onClose={handleClose} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', backgroundColor: 'white', width: '40vw', height: '40vh'}}>
+          <Box sx={{ borderBottom: '1px solid black' }}>
             <Typography>User Profile Modal</Typography>
+          </Box>
+          <Box sx={{ flexGrow: 1 }}>
             { userData?.firstName ? (
               <Typography>{userData.firstName}</Typography>
             ) : (
@@ -61,7 +63,7 @@ const UserProfileModal = ({
             )}
 
           </Box>
-          <Box>
+          <Box sx={{ borderTop: '1px solid black' }}>
             <Button onClick={handleAddData}>Submit</Button>
           </Box>
         </Box>

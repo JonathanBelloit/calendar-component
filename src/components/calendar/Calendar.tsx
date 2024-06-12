@@ -24,7 +24,7 @@ const Calendar = () => {
   useEffect(() => {
     if (userEmail) {
       dispatch(fetchEvents(userEmail))
-      dispatch(fetchUserData(userEmail))
+      dispatch(fetchUserData({userEmail}))
     }
   }, [dispatch, userEmail])
 
@@ -110,12 +110,12 @@ const Calendar = () => {
 
   return (
     <>
-      <UserProfileModal setProfileModalOpen={setProfileModalOpen} profileModalOpen={profileModalOpen} userEmail={userEmail}/>
+      { userEmail && <UserProfileModal setProfileModalOpen={setProfileModalOpen} profileModalOpen={profileModalOpen} userEmail={userEmail}/>}
       <Grid container spacing={0} sx={{ backgroundColor: 'blue', minHeight: '100vh', p: 1, gap: 1, height: '100vh', display: 'flex', flexGrow: 1 }}> {/* Main wrapper */}
         <Grid item xs={12} sm={6.5}  sx={{ flexGrow: 1, backgroundColor: 'blue' }}> {/* Calendar wrapper */}
           <Stack direction='row' sx={{ pr: 3 }}>
             <Box sx={{ display: 'flex', flexGrow: 1 }}>
-              <h1>{userEmail}'s Calendar</h1>
+              <h1>{userData?.firstName}'s Calendar</h1>
             </Box>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
               <RiShareBoxFill size={30}/>
