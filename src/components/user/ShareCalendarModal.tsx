@@ -1,7 +1,7 @@
 import { Button, Modal, Box, Typography, TextField } from '@mui/material';
 import { useAppDispatch } from '../../hooks/useAppDispatch';
 import { useSelector } from 'react-redux';
-import { fetchUserData, selectUserData, addUserData } from '../../redux/userSlice';
+import { fetchUserData, selectUserData, updateUser } from '../../redux/userSlice';
 import { useEffect, useState } from 'react';
 
 const ShareCalendarModal = ({
@@ -16,19 +16,26 @@ const ShareCalendarModal = ({
   const dispatch = useAppDispatch();
   const userData = useSelector(selectUserData);
 
-  const [newData, setNewData] = useState({
-    firstName: userData?.firstName || "",
-    lastName: userData?.lastName || "",
-    sharingAllowed: userData?.sharingAllowed || [],
-  });
-
-  const handleClose = () => setShareCalendarModalOpen(false);
+  const [newEmail, setNewEmail] = useState("");
 
   useEffect(() => {
     if (userEmail) {
       dispatch(fetchUserData({ userEmail: userEmail }));
     }
   }, [dispatch, userEmail]);
+
+  const handleClose = () => setShareCalendarModalOpen(false);
+
+  const handleAddEmail = () => {
+    if (userData && newEmail) {
+      const updatedUserData = {
+        ...userData,
+        sharingAllowed: [...(userData.sharingAllowed || []), newEmail],
+      };
+      dispatch(updateUser({ userEmail, user: updatedUserData }));
+      setNewEmail("");
+    }
+  };
 
   return (
     <>
@@ -55,8 +62,13 @@ const ShareCalendarModal = ({
             <Typography>Not Sharing with any other users</Typography>
           )}
           <Box>
-            <TextField label="User Email" />
-            <Button>Add User</Button>
+            <TextField
+              label="User Email"
+              value={newEmail}
+              onChange={(e) => setNewEmail(e.target.value)}
+              sx={{ mr: 2 }}
+            />
+            <Button onClick={handleAddEmail}>Add User</Button>
           </Box>
         </Box>
       </Modal>
