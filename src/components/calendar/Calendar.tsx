@@ -9,6 +9,7 @@ import { fetchUserData, selectUserData } from "../../redux/userSlice";
 import { useAppDispatch } from "../../hooks/useAppDispatch";
 import { getCurrentUserEmail } from "../../hooks/useCurrentUserEmail";
 import UserProfileModal from "../user/UserProfileModal";
+import ShareCalendarModal from "../user/ShareCalendarModal";
 // import { Timestamp } from 'firebase/firestore'
 import { dailyEventCount } from '../../utils/eventUtils';
 import InfoPanel from "./InfoPanel";
@@ -38,6 +39,10 @@ const Calendar = () => {
   
   // Profile Modal state variables
   const [profileModalOpen, setProfileModalOpen] = useState(false)
+
+  // Share Calendar state variables
+  const [shareCalendarModalOpen, setShareCalendarModalOpen] = useState(false)
+
   // Event state variables
   const [eventTitle, setEventTitle] = useState('')
   const [morningOrAfternoon, setMorningOrAfternoon] = useState('am')
@@ -110,7 +115,12 @@ const Calendar = () => {
 
   return (
     <>
-      { userEmail && <UserProfileModal setProfileModalOpen={setProfileModalOpen} profileModalOpen={profileModalOpen} userEmail={userEmail}/>}
+      { userEmail && (
+        <>
+          <UserProfileModal setProfileModalOpen={setProfileModalOpen} profileModalOpen={profileModalOpen} userEmail={userEmail}/>
+          <ShareCalendarModal setShareCalendarModalOpen={setShareCalendarModalOpen} shareCalendarModalOpen={shareCalendarModalOpen} userEmail={userEmail}/>
+        </>
+      )}
       <Grid container spacing={0} sx={{ backgroundColor: 'blue', minHeight: '100vh', p: 1, gap: 1, height: '100vh', display: 'flex', flexGrow: 1 }}> {/* Main wrapper */}
         <Grid item xs={12} sm={6.5}  sx={{ flexGrow: 1, backgroundColor: 'blue' }}> {/* Calendar wrapper */}
           <Stack direction='row' sx={{ pr: 3 }}>
@@ -118,7 +128,7 @@ const Calendar = () => {
               <h1>{userData?.firstName}'s Calendar</h1>
             </Box>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-              <RiShareBoxFill size={30}/>
+              <RiShareBoxFill size={30} onClick={() => setShareCalendarModalOpen(true)}/>
               <GrUserSettings size={30} onClick={() => setProfileModalOpen(true)}/>
             </Box>
           </Stack>
