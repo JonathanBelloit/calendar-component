@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { formatDate } from '../../utils/dateUtils';
 import { IoCloseOutline } from "react-icons/io5";
 import EventItemFooter from './EventItemFooter';
+import EventShareSection from './EventShareSection';
 
 
 const EventItem = ({
@@ -50,8 +51,11 @@ const EventItem = ({
           </Box>
           <Box>
             <Paper sx={{ mx: 5, my: 5 }}>{event.description}</Paper>
+          </Box>
+          <Box>
             <Typography>Added by: {event.user || ""}</Typography>
           </Box>
+          <EventShareSection user={event.user} />
           <EventItemFooter
             event={event}
             setEventTrigger={setEventTrigger}

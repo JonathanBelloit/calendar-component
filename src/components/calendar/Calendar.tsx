@@ -4,8 +4,8 @@ import { TbSquareRoundedArrowLeftFilled } from "react-icons/tb";
 import { TbSquareRoundedArrowRightFilled } from "react-icons/tb";
 import LogoutBtn from "../auth/LogoutBtn";
 import { useSelector } from "react-redux";
-import { addEvent, selectEvents, fetchEvents } from "../../redux/eventSlice";
 import { fetchUserData, selectUserData } from "../../redux/userSlice";
+import { addEvent, selectEvents, fetchEvents } from "../../redux/eventSlice";
 import { useAppDispatch } from "../../hooks/useAppDispatch";
 import { getCurrentUserEmail } from "../../hooks/useCurrentUserEmail";
 import UserProfileModal from "../user/UserProfileModal";
@@ -215,7 +215,7 @@ const Calendar = () => {
                 rows={5}
                 value={eventDescription}
                 onChange={(e) => setEventDescription(e.target.value)}
-          />
+              />
                 </DialogContent>
                 <DialogActions>
                   <Button onClick={handleAddEvent}>Add Event</Button>
