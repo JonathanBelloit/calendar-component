@@ -45,7 +45,7 @@ export const fetchEvents = createAsyncThunk<Event[], string>(
           date: data.date instanceof Timestamp ? data.date.toDate().toISOString() : new Date(data.date).toISOString(), // Convert to ISO string
           dateString: data.date instanceof Timestamp ? data.date.toDate().toISOString() : new Date(data.date).toISOString(), // Convert to ISO string
           time: data.time,
-          user: userEmail
+          user: data.user
         } as Event);
       }
     });
