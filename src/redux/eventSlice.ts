@@ -12,7 +12,7 @@ interface Event {
   date: string | Date;
   dateString: string; // Store dates as ISO strings for simplicity
   time: string;
-  user: string;
+  user: string | undefined;
 }
 
 interface EventState {
@@ -63,6 +63,19 @@ export const fetchEvents = createAsyncThunk<Event[], string>(
 
 export const addEvent = createAsyncThunk<Event, { userEmail: string; event: Omit<Event, 'id'> }>(
   'events/addEvent',
+  async ({ userEmail, event }) => {
+    const eventWithISODate = {
+      ...event,
+      date: new Date(event.date).toISOString(), // Convert date to ISO string
+      dateString: new Date(event.date).toISOString() // Convert date to ISO string
+    };
+    const docRef = await addDoc(collection(db, `users/${userEmail}/calendarEvents`), eventWithISODate);
+    return { id: docRef.id, ...eventWithISODate };
+  }
+);
+
+export const shareEvent = createAsyncThunk<Event, { userEmail: string; event: Event }>(
+  'events/shareEvent',
   async ({ userEmail, event }) => {
     const eventWithISODate = {
       ...event,
@@ -126,6 +139,18 @@ const eventSlice = createSlice({
         state.events.push(action.payload);
       })
       .addCase(addEvent.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message || "Failed to add event";
+      })
+      .addCase(shareEvent.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(shareEvent.fulfilled, (state, action: PayloadAction<Event>) => {
+        state.loading = false;
+        state.events.push(action.payload);
+      })
+      .addCase(shareEvent.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message || "Failed to add event";
       })

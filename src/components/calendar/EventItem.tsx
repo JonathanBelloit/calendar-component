@@ -52,10 +52,7 @@ const EventItem = ({
           <Box>
             <Paper sx={{ mx: 5, my: 5 }}>{event.description}</Paper>
           </Box>
-          <Box>
-            <Typography>Added by: {event.user || ""}</Typography>
-          </Box>
-          <EventShareSection user={event.user} />
+          <EventShareSection event={event} />
           <EventItemFooter
             event={event}
             setEventTrigger={setEventTrigger}
