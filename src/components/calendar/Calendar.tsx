@@ -2,19 +2,14 @@ import { Box, Button, Grid, Dialog, TextField, DialogContent, DialogActions, Dia
 import { useState, useEffect } from "react";
 import { TbSquareRoundedArrowLeftFilled } from "react-icons/tb";
 import { TbSquareRoundedArrowRightFilled } from "react-icons/tb";
-import LogoutBtn from "../auth/LogoutBtn";
 import { useSelector } from "react-redux";
 import { fetchUserData, selectUserData } from "../../redux/userSlice";
 import { addEvent, selectEvents, fetchEvents } from "../../redux/eventSlice";
 import { useAppDispatch } from "../../hooks/useAppDispatch";
 import { getCurrentUserEmail } from "../../hooks/useCurrentUserEmail";
-import UserProfileModal from "../user/UserProfileModal";
-import ShareCalendarModal from "../user/ShareCalendarModal";
-// import { Timestamp } from 'firebase/firestore'
 import { dailyEventCount } from '../../utils/eventUtils';
 import InfoPanel from "./InfoPanel";
-import { RiShareBoxFill } from "react-icons/ri";
-import { GrUserSettings } from "react-icons/gr";
+import CalendarHeader from "./CalendarHeader";
 
 const Calendar = () => {
   const dispatch = useAppDispatch();
@@ -37,12 +32,6 @@ const Calendar = () => {
   const [selectedDay, setSelectedDay] = useState(currentDate);
   const [showEventDialog, setShowEventDialog] = useState(false)
   
-  // Profile Modal state variables
-  const [profileModalOpen, setProfileModalOpen] = useState(false)
-
-  // Share Calendar state variables
-  const [shareCalendarModalOpen, setShareCalendarModalOpen] = useState(false)
-
   // Event state variables
   const [eventTitle, setEventTitle] = useState('')
   const [morningOrAfternoon, setMorningOrAfternoon] = useState('am')
@@ -115,24 +104,9 @@ const Calendar = () => {
 
   return (
     <>
-      { userEmail && (
-        <>
-          <UserProfileModal setProfileModalOpen={setProfileModalOpen} profileModalOpen={profileModalOpen} userEmail={userEmail}/>
-          <ShareCalendarModal setShareCalendarModalOpen={setShareCalendarModalOpen} shareCalendarModalOpen={shareCalendarModalOpen} userEmail={userEmail}/>
-        </>
-      )}
       <Grid container spacing={0} sx={{ backgroundColor: 'blue', minHeight: '100vh', p: 1, gap: 1, height: '100vh', display: 'flex', flexGrow: 1 }}> {/* Main wrapper */}
         <Grid item xs={12} sm={6.5}  sx={{ flexGrow: 1, backgroundColor: 'blue' }}> {/* Calendar wrapper */}
-          <Stack direction='row' sx={{ pr: 3 }}>
-            <Box sx={{ display: 'flex', flexGrow: 1 }}>
-              <h1>{userData?.firstName}'s Calendar</h1>
-            </Box>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-              <RiShareBoxFill size={30} onClick={() => setShareCalendarModalOpen(true)}/>
-              <GrUserSettings size={30} onClick={() => setProfileModalOpen(true)}/>
-            </Box>
-          </Stack>
-          <LogoutBtn />
+          <CalendarHeader userEmail={userEmail} userFirstName={userData?.firstName} />
           <Grid container sx={styles.dateNavigationWrapper}> {/* Calendar Date Navigation */}
             <Grid item xs={2} sx={{display: 'flex', justifyContent: 'center'}}>
               <TbSquareRoundedArrowLeftFilled onClick={prevMonth} />
