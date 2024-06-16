@@ -53,14 +53,6 @@ export const fetchEvents = createAsyncThunk<Event[], string>(
   }
 );
 
-// export const addEvent = createAsyncThunk<Event, { userEmail: string; event: Omit<Event, 'id'> }>(
-//   'events/addEvent',
-//   async ({ userEmail, event }) => {
-//     const docRef = await addDoc(collection(db, `users/${userEmail}/calendarEvents`), event);
-//     return { id: docRef.id, ...event };
-//   }
-// );
-
 export const addEvent = createAsyncThunk<Event, { userEmail: string; event: Omit<Event, 'id'> }>(
   'events/addEvent',
   async ({ userEmail, event }) => {

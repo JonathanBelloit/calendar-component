@@ -34,7 +34,6 @@ const UserProfileModal = ({
     dispatch(addUserData({ userEmail, data: newData }));
   };
 
-  console.log(userData)
   return (
     <>
       <Modal open={profileModalOpen} onClose={handleClose} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center'}}>

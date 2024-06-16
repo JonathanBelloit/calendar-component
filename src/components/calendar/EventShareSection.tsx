@@ -21,8 +21,6 @@ const EventShareSection = ({ event } : {
   const userEmail = getCurrentUserEmail()
   const shareList = userData?.sharingAllowed || []
 
-  console.log('this is the event: ', event)
-
   useEffect(() => {
     if (userEmail) {
       dispatch(fetchUserData({userEmail}))

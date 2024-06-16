@@ -44,7 +44,6 @@ const EventList = () => {
     return eventDate.getMonth() === today.getMonth();
   };
 
-  console.log("this is the events: ", events);
   return (
     <Stack gap={1}>
       <Box sx={{ backgroundColor: 'rgba(255,255,255, 0.2)', p: 1, borderRadius: 3 }}>
