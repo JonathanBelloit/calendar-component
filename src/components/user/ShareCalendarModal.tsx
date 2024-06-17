@@ -51,6 +51,8 @@ const ShareCalendarModal = ({
             backgroundColor: "white",
             width: "40vw",
             height: "40vh",
+            alignItems: "center",
+            justifyContent: "center",
           }}
         >
           <Typography>Calendar Shared with: </Typography>
@@ -61,7 +63,7 @@ const ShareCalendarModal = ({
           ) : (
             <Typography>Not Sharing with any other users</Typography>
           )}
-          <Box>
+          <Box sx={{ display: "flex", mt: 2 }}>
             <TextField
               label="User Email"
               value={newEmail}
