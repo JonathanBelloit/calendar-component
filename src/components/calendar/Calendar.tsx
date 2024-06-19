@@ -1,4 +1,4 @@
-import { Box, Button, Grid, Dialog, TextField, DialogContent, DialogActions, DialogTitle, Typography, Stack, ToggleButtonGroup, ToggleButton, Badge } from "@mui/material";
+import { Box, Button, Grid, Dialog, TextField, DialogContent, DialogActions, DialogTitle, Typography, Stack, ToggleButtonGroup, ToggleButton } from "@mui/material";
 import { useState, useEffect } from "react";
 import { TbSquareRoundedArrowLeftFilled } from "react-icons/tb";
 import { TbSquareRoundedArrowRightFilled } from "react-icons/tb";
@@ -10,6 +10,7 @@ import { getCurrentUserEmail } from "../../hooks/useCurrentUserEmail";
 import { dailyEventCount } from '../../utils/eventUtils';
 import InfoPanel from "./InfoPanel";
 import CalendarHeader from "./CalendarHeader";
+import DayCell from "./DayCell";
 
 const Calendar = () => {
   const dispatch = useAppDispatch();
@@ -134,12 +135,13 @@ const Calendar = () => {
                   const dateKey = new Date(currentYear, currentMonth, day + 1).toDateString();
                   const eventCount = eventsPerDay[dateKey] || 0;
                   return (
-                  <Grid item xs={1} sx={{ p: .2 }} key={day + 1}>
-                    <Box sx={isToday ? styles.currentDay : styles.dayGrid} onClick={() => handleDayClick(day+1)}>
-                      <Badge badgeContent={eventCount} color="primary" sx={{ display: 'flex', position: 'absolute', right: 10, top: 10, zIndex: 20}}></Badge>
-                      {day + 1}
-                    </Box>
-                  </Grid>
+                  // <Grid item xs={1} sx={{ p: .2 }} key={day + 1}>
+                  //   <Box sx={isToday ? styles.currentDay : styles.dayGrid} onClick={() => handleDayClick(day+1)}>
+                  //     <Badge badgeContent={eventCount} color="primary" sx={{ display: 'flex', position: 'absolute', right: 10, top: 10, zIndex: 20}}></Badge>
+                  //     {day + 1}
+                  //   </Box>
+                  // </Grid>
+                    <DayCell isToday={isToday} eventCount={eventCount} handleDayClick={handleDayClick} day={day + 1} />
                   )
                 })}
               </Grid>
@@ -240,33 +242,33 @@ const styles = {
     fontSize: '1.5rem',
     textTransform: 'uppercase'
   },
-  dayGrid: {
-    display: 'flex',
-    position: 'relative',
-    aspectRatio: '1 / 1',
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-    borderRadius: 2,
-    p: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    '&:hover': {
-      backgroundColor: 'rgba(255, 255, 255, 0.5)'
-    }
-  },
-  currentDay: {
-    display: 'flex',
-    aspectRatio: '1 / 1',
-    color: 'white',
-    backgroundColor: 'rgba(255, 165, 0, 0.8)',
-    boxShadow: '0 0 20px 5px rgba(255, 165, 0, 0.4)',
-    borderRadius: '50%',
-    p: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    '&:hover': {
-      backgroundColor: 'rgba(255, 165, 0, 0.9)'
-    }
-  },
+  // dayGrid: {
+  //   display: 'flex',
+  //   position: 'relative',
+  //   aspectRatio: '1 / 1',
+  //   backgroundColor: 'rgba(255, 255, 255, 0.1)',
+  //   borderRadius: 2,
+  //   p: 1,
+  //   alignItems: 'center',
+  //   justifyContent: 'center',
+  //   '&:hover': {
+  //     backgroundColor: 'rgba(255, 255, 255, 0.5)'
+  //   }
+  // },
+  // currentDay: {
+  //   display: 'flex',
+  //   aspectRatio: '1 / 1',
+  //   color: 'white',
+  //   backgroundColor: 'rgba(255, 165, 0, 0.8)',
+  //   boxShadow: '0 0 20px 5px rgba(255, 165, 0, 0.4)',
+  //   borderRadius: '50%',
+  //   p: 1,
+  //   alignItems: 'center',
+  //   justifyContent: 'center',
+  //   '&:hover': {
+  //     backgroundColor: 'rgba(255, 165, 0, 0.9)'
+  //   }
+  // },
   eventGrid: {
     border: '1px solid white',
   }
