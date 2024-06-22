@@ -105,7 +105,7 @@ const Calendar = () => {
 
   return (
     <>
-      <Grid container spacing={0} sx={{ backgroundColor: 'blue', minHeight: '100vh', p: 1, gap: 1, height: '100vh', display: 'flex', flexGrow: 1 }}> {/* Main wrapper */}
+      <Grid container spacing={0} sx={{ backgroundColor: 'background.default', minHeight: '100vh', p: 1, gap: 1, height: '100vh', display: 'flex', flexGrow: 1 }}> {/* Main wrapper */}
         <Grid item xs={12} sm={6.5}  sx={{ flexGrow: 1, backgroundColor: 'blue' }}> {/* Calendar wrapper */}
           <CalendarHeader userEmail={userEmail} userFirstName={userData?.firstName} />
           <Grid container sx={styles.dateNavigationWrapper}> {/* Calendar Date Navigation */}

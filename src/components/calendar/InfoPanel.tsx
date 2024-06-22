@@ -21,7 +21,7 @@ const InfoPanel = () => {
 
   return (
     <>
-      <Box sx={{ borderBottom: '2px solid black', pb: 1}}>
+      <Box sx={{ borderBottom: '2px solid black', pb: 1,}}>
         <Stack spacing={2} alignItems='center'>
           <ToggleButtonGroup size='large' {...control} aria-label='events or schedule view'>
             <ToggleButton value='events' key='events'>
