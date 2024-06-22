@@ -12,7 +12,7 @@ interface Event {
   date: string | Date;
   dateString: string; // Store dates as ISO strings for simplicity
   time: string;
-  user: string | undefined;
+  user?: string | undefined;
 }
 
 interface EventState {

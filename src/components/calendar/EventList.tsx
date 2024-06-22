@@ -48,20 +48,55 @@ const EventList = () => {
     <Stack gap={1}>
       <Box sx={{ backgroundColor: 'rgba(255,255,255, 0.2)', p: 1, borderRadius: 3 }}>
         <Typography variant="h4">Today's Events:</Typography>
-        {events.filter(event => isToday(event.date)).map(event => (
-          <EventItem event={event} key={event.id} />
+        {events.filter(event => isToday(typeof event.date === "string" ? event.date : event.date.toDateString())).map(event => (
+          <EventItem 
+            event={{
+                  id: event.id,
+                  title: event.title,
+                  date: typeof event.date === "string" ? event.date : event.date.toDateString(),
+                  time: event.time,
+                  description: event.description,
+                  user: event.user,
+                }}  
+            key={event.id}
+            setEventTrigger={setEventTrigger}
+            />
         ))}
       </Box>
       <Box sx={{ backgroundColor: 'rgba(255,255,255, 0.2)', p: 1, borderRadius: 4 }}>
         <Typography variant="h4">Tomorrow's Events:</Typography>
-        {events.filter(event => isTomorrow(event.date)).map(event => (
-          <EventItem event={event} key={event.id} />
+        {events
+          .filter((event) => isTomorrow(typeof event.date === "string" ? event.date : event.date.toDateString()))
+          .map((event) => (
+            <EventItem
+              event={{
+                id: event.id,
+                title: event.title,
+                date: typeof event.date === "string" ? event.date : event.date.toDateString(),
+                time: event.time,
+                description: event.description,
+                user: event.user,
+              }}
+              key={event.id}
+              setEventTrigger={setEventTrigger}
+            />
         ))}
       </Box>
       <Box sx={{ backgroundColor: 'rgba(255,255,255, 0.2)', p: 1, borderRadius: 4 }}>
         <Typography variant="h4">This Month's Events:</Typography>
-        {events.filter(event => isThisMonth(event.date)).map(event => (
-          <EventItem event={event} key={event.id} setEventTrigger={setEventTrigger}/>
+        {events.filter(event => isThisMonth(typeof event.date === "string" ? event.date : event.date.toDateString())).map(event => (
+          <EventItem 
+            event={{
+              id: event.id,
+              title: event.title,
+              date: typeof event.date === "string" ? event.date : event.date.toDateString(),
+              time: event.time,
+              description: event.description,
+              user: event.user,
+            }}
+            key={event.id} 
+            setEventTrigger={setEventTrigger}
+            />
         ))}
       </Box>
     </Stack>
