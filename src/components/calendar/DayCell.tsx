@@ -17,18 +17,18 @@ const DayCell = ({
         sx={isToday ? styles.currentDay : styles.dayGrid}
         onClick={() => handleDayClick(day + 1)}
       >
-        <Badge
-          badgeContent={eventCount}
-          color="primary"
-          sx={{
-            display: "flex",
-            position: "absolute",
-            right: 10,
-            top: 10,
-            zIndex: 20,
-          }}
-        ></Badge>
         {day + 1}
+      <Badge
+        badgeContent={eventCount}
+        color="primary"
+        sx={{
+          display: "flex",
+          position: "absolute",
+          right: 10,
+          top: 10,
+          zIndex: 20,
+        }}
+      ></Badge>
       </Box>
     </Grid>
   );

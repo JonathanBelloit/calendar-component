@@ -102,7 +102,7 @@ const Calendar = () => {
   }
   
   const eventsPerDay = dailyEventCount(events);
-
+  console.log(events)
   return (
     <>
       <Grid container spacing={0} sx={{ backgroundColor: 'background.default', minHeight: '100vh', p: 1, gap: 1, height: '100vh', display: 'flex', flexGrow: 1 }}> {/* Main wrapper */}
