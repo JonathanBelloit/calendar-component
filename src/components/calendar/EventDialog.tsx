@@ -12,7 +12,10 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import { useAppDispatch } from "../../hooks/useAppDispatch";
-import { addEvent } from "../../redux/eventSlice";
+import { addEvent, selectEvents } from "../../redux/eventSlice";
+import { useSelector } from "react-redux";
+import { getEventsForDate } from "../../utils/eventUtils";
+import DialogEventItem from "./DialogEventItem";
 
 const EventDialog = ({
   showEventDialog,
@@ -26,12 +29,28 @@ const EventDialog = ({
   targetDate: Date;
 }) => {
   const dispatch = useAppDispatch();
+  const events = useSelector(selectEvents);
+  const todaysEvents = getEventsForDate(events, targetDate.toDateString());
 
   const [eventTitle, setEventTitle] = useState("");
   const [morningOrAfternoon, setMorningOrAfternoon] = useState("am");
   const [eventDescription, setEventDescription] = useState("");
   const [eventHour, setEventHour] = useState("");
   const [eventMinute, setEventMinute] = useState("");
+  const [dialogView, setDialogView] = useState("events");
+
+  const handleChange = (
+    _event: React.MouseEvent,
+    newDialogView: string,
+  ) => {
+    setDialogView(newDialogView)
+  }
+  
+  const control = {
+    value: dialogView,
+    onChange: handleChange,
+    exclusive: true
+  }
 
   const handleAddEvent = () => {
     // const eventDate = new Date(currentYear, currentMonth, targetDay)
@@ -62,7 +81,15 @@ const EventDialog = ({
   };
 
   return (
-    <Dialog open={showEventDialog} onClose={() => setShowEventDialog(false)}>
+    <Dialog 
+      open={showEventDialog} 
+      onClose={() => setShowEventDialog(false)}
+      PaperProps={{
+        sx: {
+          minWidth: '35vw',
+        }
+      }}
+    >
       <DialogTitle
         sx={{
           textAlign: "center",
@@ -71,11 +98,28 @@ const EventDialog = ({
           backgroundColor: "rgba(42,82,120,1.00)",
         }}
       >
-        Add New Event
+        <ToggleButtonGroup
+        size='large' {...control} aria-label='events or schedule view'
+        >
+          <ToggleButton value="events">Events</ToggleButton>
+          <ToggleButton value="add">Add</ToggleButton>
+        </ToggleButtonGroup>
+        { dialogView === 'events' ? "Today's Events" : 'Add Event' }
       </DialogTitle>
       <DialogContent
         sx={{ display: "flex", flexDirection: "column", p: 5, gap: 2 }}
       >
+        {dialogView === "events" &&
+          todaysEvents.map((event) => (
+            <DialogEventItem
+              key={event.time}
+              time={event.time}
+              title={event.title}
+              description={event.description}
+            />
+          ))}
+        {dialogView === "add" && (
+          <>
         <TextField
           label="Event Name"
           value={eventTitle}
@@ -115,7 +159,9 @@ const EventDialog = ({
           value={eventDescription}
           onChange={(e) => setEventDescription(e.target.value)}
           label="Event Description"
-        />
+        /> 
+        </>
+      )}
       </DialogContent>
       <DialogActions>
         <Button onClick={handleAddEvent}>Add Event</Button>

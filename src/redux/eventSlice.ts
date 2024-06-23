@@ -5,7 +5,7 @@ import { RootState } from './store';
 import { Timestamp } from 'firebase/firestore'
 
 // Define the event type
-interface Event {
+export interface Event {
   id?: string;
   title: string;
   description: string;

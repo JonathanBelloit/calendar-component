@@ -120,6 +120,7 @@ const Calendar = () => {
                 setShowEventDialog={setShowEventDialog}
                 userEmail={userEmail ? userEmail : ''}
                 targetDate={targetDate ? targetDate : new Date()}
+                events={events}
             />
             }
         </Grid>
