@@ -1,16 +1,17 @@
-import { Box, Button, Grid, Dialog, TextField, DialogContent, DialogActions, DialogTitle, Typography, Stack, ToggleButtonGroup, ToggleButton } from "@mui/material";
+import { Box, Button, Grid } from "@mui/material";
 import { useState, useEffect } from "react";
 import { TbSquareRoundedArrowLeftFilled } from "react-icons/tb";
 import { TbSquareRoundedArrowRightFilled } from "react-icons/tb";
 import { useSelector } from "react-redux";
 import { fetchUserData, selectUserData } from "../../redux/userSlice";
-import { addEvent, selectEvents, fetchEvents } from "../../redux/eventSlice";
+import { selectEvents, fetchEvents } from "../../redux/eventSlice";
 import { useAppDispatch } from "../../hooks/useAppDispatch";
 import { getCurrentUserEmail } from "../../hooks/useCurrentUserEmail";
 import { dailyEventCount } from '../../utils/eventUtils';
 import InfoPanel from "./InfoPanel";
 import CalendarHeader from "./CalendarHeader";
 import DayCell from "./DayCell";
+import EventDialog from "./EventDialog";
 
 const Calendar = () => {
   const dispatch = useAppDispatch();
@@ -30,15 +31,11 @@ const Calendar = () => {
   const currentDate = new Date();
   const [currentMonth, setCurrentMonth] = useState(currentDate.getMonth());
   const [currentYear, setCurrentYear] = useState(currentDate.getFullYear())
-  const [selectedDay, setSelectedDay] = useState(currentDate);
+  // const [selectedDay, setSelectedDay] = useState(currentDate);
   const [showEventDialog, setShowEventDialog] = useState(false)
   
   // Event state variables
-  const [eventTitle, setEventTitle] = useState('')
-  const [morningOrAfternoon, setMorningOrAfternoon] = useState('am')
-  const [eventDescription, setEventDescription] = useState('')
-  const [eventHour, setEventHour] = useState('');
-  const [eventMinute, setEventMinute] = useState('');
+
   const [targetDate, setTargetDate] = useState<Date>();
 
   const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
@@ -73,36 +70,12 @@ const Calendar = () => {
     };
 
     if (clickedDate >= today || isToday(clickedDate, today)) {
-      setSelectedDay(clickedDate);
+      setTargetDate(clickedDate);
       setShowEventDialog(true);
     }
   };
-
-  const handleAddEvent = () => {
-    // const eventDate = new Date(currentYear, currentMonth, targetDay)
-    if (userEmail && targetDate) {
-      const timeString = `${eventHour.padStart(2, "0")}:${eventMinute.padStart(2, "0")} ${morningOrAfternoon.toUpperCase()}`
-      dispatch(addEvent({
-        userEmail,
-        event: {
-          title: eventTitle,
-          description: eventDescription,
-          date: targetDate,
-          dateString: selectedDay.toDateString(),
-          time: timeString,
-          user: userEmail
-        }
-      }))
-      setEventTitle('')
-      setEventDescription('')
-      setEventMinute('')
-      setEventHour('')
-    }
-    setShowEventDialog(false)
-  }
   
   const eventsPerDay = dailyEventCount(events);
-  console.log(events)
   return (
     <>
       <Grid container spacing={0} sx={{ backgroundColor: 'background.default', minHeight: '100vh', p: 1, gap: 1, height: '100vh', display: 'flex', flexGrow: 1 }}> {/* Main wrapper */}
@@ -135,68 +108,20 @@ const Calendar = () => {
                   const dateKey = new Date(currentYear, currentMonth, day + 1).toDateString();
                   const eventCount = eventsPerDay[dateKey] || 0;
                   return (
-                  // <Grid item xs={1} sx={{ p: .2 }} key={day + 1}>
-                  //   <Box sx={isToday ? styles.currentDay : styles.dayGrid} onClick={() => handleDayClick(day+1)}>
-                  //     <Badge badgeContent={eventCount} color="primary" sx={{ display: 'flex', position: 'absolute', right: 10, top: 10, zIndex: 20}}></Badge>
-                  //     {day + 1}
-                  //   </Box>
-                  // </Grid>
-                    <DayCell isToday={isToday} eventCount={eventCount} handleDayClick={handleDayClick} day={day + 1} />
+                    <DayCell isToday={isToday} eventCount={eventCount} handleDayClick={handleDayClick} day={day + 1} key={day + 1} />
                   )
                 })}
               </Grid>
             </Box>
             <Button onClick={resetDay}>Go Back to Today</Button>
-            <Dialog
-              open={showEventDialog}
-              onClose={() => setShowEventDialog(false)}
-              >
-                <DialogTitle sx={{ textAlign: 'center', color: 'white', mb: 4, backgroundColor: 'rgba(42,82,120,1.00)'}}>Add New Event</DialogTitle>
-                <DialogContent sx={{ display: 'flex', flexDirection: 'column', p: 5, gap: 2 }}>
-                <TextField label="Event Name" value={eventTitle} onChange={(e) => setEventTitle(e.target.value)} />
-                  <Stack direction='row'>
-                    <TextField 
-                      type='number' 
-                      label="Hour"
-                      value={eventHour}
-                      onChange={(e) => setEventHour(e.target.value)}
-                      inputProps={{ min: 1, max: 12 }} 
-                      sx={{ maxWidth: '5rem' }} 
-                    />
-                    <Typography variant='h4'>:</Typography>
-                    <TextField 
-                      type='number' 
-                      label="min"
-                      value={eventMinute}
-                      onChange={(e) => setEventMinute(e.target.value)}
-                      inputProps={{ min: 0, max: 59 }} 
-                      sx={{ maxWidth: '5rem' }} 
-                    />
-                    <ToggleButtonGroup 
-                      value={morningOrAfternoon}
-                      exclusive
-                      onChange={(_e, newValue) => setMorningOrAfternoon(newValue)}
-                    >
-                      <ToggleButton value="am">
-                        AM
-                      </ToggleButton>
-                      <ToggleButton value="pm">
-                        PM
-                      </ToggleButton>
-                    </ToggleButtonGroup>
-                  </Stack>
-              <TextField
-                fullWidth
-                multiline
-                rows={5}
-                value={eventDescription}
-                onChange={(e) => setEventDescription(e.target.value)}
-              />
-                </DialogContent>
-                <DialogActions>
-                  <Button onClick={handleAddEvent}>Add Event</Button>
-                </DialogActions>
-              </Dialog>
+            {
+              <EventDialog
+                showEventDialog={showEventDialog}
+                setShowEventDialog={setShowEventDialog}
+                userEmail={userEmail ? userEmail : ''}
+                targetDate={targetDate ? targetDate : new Date()}
+            />
+            }
         </Grid>
         <Grid item xs={12} sm={5.4} sx={styles.eventGrid}>
           <InfoPanel />
