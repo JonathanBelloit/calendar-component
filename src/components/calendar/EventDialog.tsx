@@ -1,4 +1,5 @@
 import {
+  Box,
   Button,
   Dialog,
   DialogActions,
@@ -109,6 +110,7 @@ const EventDialog = ({
       <DialogContent
         sx={{ display: "flex", flexDirection: "column", p: 5, gap: 2 }}
       >
+        <Box sx={{ display: 'flex', gap: 0, flexDirection: 'column' }}>
         {dialogView === "events" &&
           todaysEvents.map((event) => (
             <DialogEventItem
@@ -118,6 +120,7 @@ const EventDialog = ({
               description={event.description}
             />
           ))}
+          </Box>
         {dialogView === "add" && (
           <>
         <TextField
