@@ -120,6 +120,7 @@ const EventDialog = ({
               description={event.description}
             />
           ))}
+          { !todaysEvents.length && <Typography variant='h6'>No events today</Typography>}
           </Box>
         {dialogView === "add" && (
           <>
