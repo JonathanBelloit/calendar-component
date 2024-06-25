@@ -3,11 +3,15 @@ import { db } from '../config/firebase';
 import { doc, getDocs, updateDoc, addDoc, collection, query } from 'firebase/firestore';
 import { RootState } from './store';
 
+interface SharingAllowed {
+  email: string;
+  color: string;
+}
 interface UserData {
   id?: string;
   firstName: string;
   lastName: string;
-  sharingAllowed?: string[];
+  sharingAllowed?: SharingAllowed[];
 }
 
 interface UserState {

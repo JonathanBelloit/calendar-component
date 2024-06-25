@@ -18,7 +18,7 @@ const ShareCalendarModal = ({
   const userData = useSelector(selectUserData);
 
   const [newEmail, setNewEmail] = useState("");
-  const [colors, setColors] = useState<{ [email: string]: string }>({});
+  const [color, setColor] = useState("");
 
   useEffect(() => {
     if (userEmail) {
@@ -32,18 +32,15 @@ const ShareCalendarModal = ({
     if (userData && newEmail) {
       const updatedUserData = {
         ...userData,
-        sharingAllowed: [...(userData.sharingAllowed || []), newEmail],
+        sharingAllowed: [
+          ...(userData.sharingAllowed || []),
+          { email: newEmail, color },
+        ],
       };
       dispatch(updateUser({ userEmail, user: updatedUserData }));
       setNewEmail("");
+      setColor("");
     }
-  };
-
-  const handleColorChange = (email: string, color: string) => {
-    setColors((prevColors) => ({
-      ...prevColors,
-      [email]: color,
-    }));
   };
 
   return (
@@ -66,12 +63,17 @@ const ShareCalendarModal = ({
         >
           <Typography>Calendar Shared with: </Typography>
           {(userData?.sharingAllowed?.length || 0) > 0 ? (
-            userData?.sharingAllowed?.map((email: string) => (
-              <Stack direction="row" alignItems="center" spacing={2} key={email}>
-                <Typography key={email}>{email}</Typography>
+            userData?.sharingAllowed?.map((user) => (
+              <Stack direction="row" alignItems="center" spacing={2} key={user.email}>
+                <Typography>{user.email}</Typography>
                 <ColorDropDown
-                  borderColor={colors[email] || ""}
-                  setColor={(color: string) => handleColorChange(email, color)}
+                  borderColor={user.color}
+                  setColor={(color: string) => {
+                    const updatedSharingAllowed = userData.sharingAllowed?.map((u) =>
+                      u.email === user.email ? { ...u, color } : u
+                    );
+                    dispatch(updateUser({ userEmail, user: { ...userData, sharingAllowed: updatedSharingAllowed } }));
+                  }}
                 />
               </Stack>
             ))
@@ -85,7 +87,6 @@ const ShareCalendarModal = ({
               onChange={(e) => setNewEmail(e.target.value)}
               sx={{ mr: 2 }}
             />
-            
             <Button onClick={handleAddEmail}>Add User</Button>
           </Box>
         </Box>
@@ -94,4 +95,4 @@ const ShareCalendarModal = ({
   );
 };
 
-export default ShareCalendarModal
+export default ShareCalendarModal;
