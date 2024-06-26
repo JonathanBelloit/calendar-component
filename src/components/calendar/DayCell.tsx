@@ -7,18 +7,39 @@ const DayCell = ({
   day,
   handleDayClick,
   events,
+  sharedUsers,
 }: {
   isToday: boolean;
   eventCount: number;
   day: number;
   handleDayClick: (day: number) => void;
   events: Event[];
+  sharedUsers: { email: string; color: string }[];
 }) => {
-  console.log(events, `events for day ${day}`);
+  // console.log(events, `events for day ${day}`);
+  // console.log(sharedUsers);
+  
+  const getBorderColor = () => {
+    if (!events || events.length === 0) {
+      return 'none';
+    }
+
+    for (const event of events) {
+      const sharedUser = sharedUsers.find(user => user.email === event.user);
+      if (sharedUser) {
+        return sharedUser.color;
+      }
+    }
+
+    return 'none';
+  };
+
+  const dayBorderStyle = isToday ? 'solid 2px orange' : `solid 2px ${getBorderColor()}`;
+
   return (
     <Grid item xs={1} sx={{ p: 0.2 }} key={day + 1}>
       <Box
-        sx={isToday ? styles.currentDay : styles.dayGrid}
+        sx={isToday ? styles.currentDay : {...styles.dayGrid, border: dayBorderStyle }}
         onClick={() => handleDayClick(day + 1)}
       >
         {day + 1}
@@ -46,6 +67,7 @@ const styles = {
     position: "relative",
     aspectRatio: "1 / 1",
     backgroundColor: "rgba(255, 255, 255, 0.1)",
+    border: 'none',
     borderRadius: 2,
     p: 1,
     alignItems: "center",

@@ -18,12 +18,10 @@ export const dailyEventCount = (events: { dateString: string }[]) => {
 
 export const getEventsForDate = (events: Event[], targetDate: string) => {
   const target = new Date(targetDate);
-  target.setDate(target.getDate() - 1);
   const adjustedTargetDate = target.toDateString();
 
   return events.filter(event => {
     const eventDate = new Date(event.dateString);
-    eventDate.setDate(eventDate.getDate() - 1);
     return eventDate.toDateString() === adjustedTargetDate;
   })
   .sort((a, b) => {

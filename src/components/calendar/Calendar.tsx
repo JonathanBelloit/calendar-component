@@ -75,7 +75,7 @@ const Calendar = () => {
     }
   };
   
-  const eventsPerDay = dailyEventCount(events);
+  // const eventsPerDay = dailyEventCount(events);
   return (
     <>
       <Grid container spacing={0} sx={{ backgroundColor: 'background.default', minHeight: '100vh', p: 1, gap: 1, height: '100vh', display: 'flex', flexGrow: 1 }}> {/* Main wrapper */}
@@ -104,15 +104,14 @@ const Calendar = () => {
                   <Grid item xs={1} key={`empty-${index}`}/>
                 ))}
                 {[...Array(daysInMonth).keys()].map((day) => {
-                  const isToday = currentYear === currentDate.getFullYear() && currentMonth === currentDate.getMonth() && day + 1 === currentDate.getDate();
-                  const dateKey = new Date(currentYear, currentMonth, day + 1).toDateString();
-                  const eventCount = eventsPerDay[dateKey] || 0;
-                  const date = new Date(currentYear, currentMonth, day + 1);
-                  const eventsForDay = getEventsForDate(events, date.toDateString())
-                  return (
-                    <DayCell isToday={isToday} eventCount={eventCount} handleDayClick={handleDayClick} day={day + 1} events={eventsForDay} key={day + 1} />
-                  )
-                })}
+                const isToday = currentYear === currentDate.getFullYear() && currentMonth === currentDate.getMonth() && day + 1 === currentDate.getDate();
+                const dateKey = new Date(currentYear, currentMonth, day + 1).toDateString();
+                const eventsForDay = getEventsForDate(events, dateKey); // Get events for the specific day
+                const eventCount = eventsForDay.length;
+                return (
+                  <DayCell isToday={isToday} eventCount={eventCount} handleDayClick={handleDayClick} day={day} key={day} events={eventsForDay} sharedUsers={userData?.sharingAllowed || []} />
+                );
+              })}
               </Grid>
             </Box>
             <Button onClick={resetDay}>Go Back to Today</Button>
