@@ -67,7 +67,7 @@ const EventShareSection = ({ event } : {
             onChange={handleChange}
             >
               {shareList.map((email) => (
-                <MenuItem value={email}>{email}</MenuItem>
+                <MenuItem value={email.email}>{email.email}</MenuItem>
               ))}
             </Select>
           </FormControl>

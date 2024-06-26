@@ -7,7 +7,7 @@ import { fetchUserData, selectUserData } from "../../redux/userSlice";
 import { selectEvents, fetchEvents } from "../../redux/eventSlice";
 import { useAppDispatch } from "../../hooks/useAppDispatch";
 import { getCurrentUserEmail } from "../../hooks/useCurrentUserEmail";
-import { dailyEventCount, getEventsForDate } from '../../utils/eventUtils';
+import { getEventsForDate } from '../../utils/eventUtils';
 import InfoPanel from "./InfoPanel";
 import CalendarHeader from "./CalendarHeader";
 import DayCell from "./DayCell";
