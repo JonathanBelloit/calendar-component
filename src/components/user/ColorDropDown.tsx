@@ -17,12 +17,12 @@ const ColorDropDown = ({ borderColor, setColor }: { borderColor: string, setColo
           onChange={handleChange}
           sx={{ backgroundColor: borderColor}}
         >
-          <MenuItem dense={true} sx={{ color: borderColor }}value="red">Red</MenuItem>
+          <MenuItem dense={true} sx={{ color: 'red' }}value="red">Red</MenuItem>
           <MenuItem value="blue">Blue</MenuItem>
           <MenuItem value="purple">Purple</MenuItem>
           <MenuItem value="green">Green</MenuItem>
           <MenuItem value="orange">Orange</MenuItem>
-          <MenuItem value="pink">Red</MenuItem>
+          <MenuItem value="pink">Pink</MenuItem>
         </Select>
       </FormControl>
     </Box>

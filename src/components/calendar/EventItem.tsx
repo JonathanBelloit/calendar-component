@@ -70,7 +70,7 @@ const boxStyle = {
   p: 1,
   mb: 1,
   '&:hover': {
-    backgroundColor: 'green'
+    backgroundColor: '#3574A1'
   }
 }
 

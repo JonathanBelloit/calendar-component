@@ -34,7 +34,7 @@ const DayCell = ({
     return 'none';
   };
 
-  const dayBorderStyle = isToday ? 'solid 2px orange' : `solid 2px ${getBorderColor()}`;
+  const dayBorderStyle = isToday ? 'solid 2px orange' : `solid 4px ${getBorderColor()}`;
 
   return (
     <Grid item xs={1} sx={{ p: 0.2 }} key={day + 1}>
