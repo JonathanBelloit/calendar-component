@@ -78,13 +78,19 @@ const EventDialog = ({
       setEventMinute("");
       setEventHour("");
     }
+    setDialogView('events');
+    setShowEventDialog(false);
+  };
+
+  const handleClose = () => {
+    setDialogView('events');
     setShowEventDialog(false);
   };
 
   return (
     <Dialog 
       open={showEventDialog} 
-      onClose={() => setShowEventDialog(false)}
+      onClose={handleClose}
       PaperProps={{
         sx: {
           minWidth: '35vw',
@@ -168,7 +174,7 @@ const EventDialog = ({
       )}
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleAddEvent}>Add Event</Button>
+        { dialogView === 'add' && <Button onClick={handleAddEvent}>Add Event</Button> }
       </DialogActions>
     </Dialog>
   );

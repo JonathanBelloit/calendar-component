@@ -25,5 +25,10 @@ export const getEventsForDate = (events: Event[], targetDate: string) => {
     const eventDate = new Date(event.dateString);
     eventDate.setDate(eventDate.getDate() - 1);
     return eventDate.toDateString() === adjustedTargetDate;
+  })
+  .sort((a, b) => {
+    const timeA = new Date(`${adjustedTargetDate} ${a.time}`);
+    const timeB = new Date(`${adjustedTargetDate} ${b.time}`);
+    return timeA.getTime() - timeB.getTime();
   });
 };
