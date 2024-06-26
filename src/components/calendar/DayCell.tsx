@@ -1,16 +1,20 @@
 import { Grid, Box, Badge } from "@mui/material";
+import { Event } from "../../redux/eventSlice";
 
 const DayCell = ({
   isToday,
   eventCount,
   day,
   handleDayClick,
+  events,
 }: {
   isToday: boolean;
   eventCount: number;
   day: number;
   handleDayClick: (day: number) => void;
+  events: Event[];
 }) => {
+  console.log(events, `events for day ${day}`);
   return (
     <Grid item xs={1} sx={{ p: 0.2 }} key={day + 1}>
       <Box
