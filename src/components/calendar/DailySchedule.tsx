@@ -1,46 +1,46 @@
 import { useEffect, useState } from "react";
-import { Accordion, AccordionSummary, AccordionDetails, Box, Typography, Grid, Button } from "@mui/material";
+import { Accordion, AccordionSummary, AccordionDetails, Box, Typography, Grid, Button, Select, MenuItem, FormControl, InputLabel } from "@mui/material";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useAppDispatch } from "../../hooks/useAppDispatch";
 import { getCurrentUserEmail } from "../../hooks/useCurrentUserEmail";
 import { fetchEvents, selectEvents } from "../../redux/eventSlice";
 import { fetchSchedule, selectSchedule, updateScheduleItem } from "../../redux/scheduleSlice";
 import { useSelector } from "react-redux";
-import { formatISO, startOfDay, addHours } from 'date-fns';
+import { formatISO, startOfDay, addHours, format } from 'date-fns';
 
-const DailySchedule = ({/*{ date }*/}) => {
+const DailySchedule = () => {
   const dispatch = useAppDispatch();
   const userEmail = getCurrentUserEmail();
   const events = useSelector(selectEvents);
   const schedule = useSelector(selectSchedule);
 
   const [expanded, setExpanded] = useState<string | false>(false);
+  const [selectedDate, setSelectedDate] = useState(new Date());
 
-  // hard coding date for testing
-  const date = new Date();
-  // useEffect(() => {
-  //   if (userEmail) {
-  //     dispatch(fetchEvents(userEmail));
-  //     dispatch(fetchSchedule({ userEmail, date: formatISO(date, { representation: 'date' }) }));
-  //   }
-  // }, [dispatch, userEmail, date]);
+  useEffect(() => {
+    if (userEmail) {
+      dispatch(fetchEvents(userEmail));
+      dispatch(fetchSchedule({ userEmail, date: formatISO(selectedDate, { representation: 'date' }) }));
+    }
+  }, [dispatch, userEmail, selectedDate]);
 
   const handleChange = (panel: string) => (_event: React.SyntheticEvent, isExpanded: boolean) => {
     setExpanded(isExpanded ? panel : false);
   };
 
-  // const handleToggleAvailability = (item) => {
-  //   dispatch(updateScheduleItem({ userEmail, item: { ...item, available: !item.available } }));
-  // };
+  const handleDateChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+    setSelectedDate(new Date(event.target.value as string));
+  };
 
   const renderHourlySchedule = () => {
     const hours = Array.from({ length: 24 }, (_, i) => {
-      const hourStart = addHours(startOfDay(date), i);
+      const hourStart = addHours(startOfDay(selectedDate), i);
+      const formattedTime = format(hourStart, 'hh:00 a');
       // const scheduleItem = schedule.find(item => new Date(item.time).getHours() === hourStart.getHours());
 
       return (
         <Box key={i} sx={{ mb: 1, p: 1, border: '1px solid grey', borderRadius: 2 }}>
-          <Typography variant="body1"><strong>{hourStart.getHours()}:00</strong></Typography>
+          <Typography variant="body1"><strong>{formattedTime}</strong></Typography>
           {/* {scheduleItem ? ( */}
             <>
               <Typography>test</Typography>
@@ -65,6 +65,25 @@ const DailySchedule = ({/*{ date }*/}) => {
   return (
     <Box sx={{ p: 3, backgroundColor: 'white', borderRadius: 2 }}>
       <Typography variant="h4" sx={{ mb: 2 }}>Daily Schedule</Typography>
+      <FormControl fullWidth sx={{ mb: 2 }}>
+        <InputLabel id="select-day-label">Select Day</InputLabel>
+        <Select
+          labelId="select-day-label"
+          id="select-day"
+          value={selectedDate.toISOString()}
+          onChange={handleDateChange}
+          label="Select Day"
+        >
+          {[...Array(7)].map((_, index) => {
+            const dateOption = addHours(startOfDay(new Date()), index * 24);
+            return (
+              <MenuItem key={index} value={dateOption.toISOString()}>
+                {format(dateOption, 'EEEE, MMMM do yyyy')}
+              </MenuItem>
+            );
+          })}
+        </Select>
+      </FormControl>
       <Accordion expanded={expanded === 'sleep'} onChange={handleChange('sleep')}>
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
           <Typography>Sleep Hours</Typography>
