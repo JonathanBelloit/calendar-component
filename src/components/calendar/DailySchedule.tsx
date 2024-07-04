@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Accordion, AccordionSummary, AccordionDetails, Box, Typography, FormControl, InputLabel, Select, MenuItem } from "@mui/material";
+import { Accordion, AccordionSummary, AccordionDetails, Box, Typography, FormControl, InputLabel, Select, MenuItem, Button, TextField, Grid } from "@mui/material";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useAppDispatch } from "../../hooks/useAppDispatch";
 import { getCurrentUserEmail } from "../../hooks/useCurrentUserEmail";
@@ -18,6 +18,12 @@ const DailySchedule = () => {
   const [expanded, setExpanded] = useState<string | false>(false);
   const [selectedDate, setSelectedDate] = useState(new Date());
 
+  // State for start and end hours
+  const [sleepStart, setSleepStart] = useState(22); // Default to 10 PM
+  const [sleepEnd, setSleepEnd] = useState(6); // Default to 6 AM
+  const [workStart, setWorkStart] = useState(9); // Default to 9 AM
+  const [workEnd, setWorkEnd] = useState(17); // Default to 5 PM
+
   useEffect(() => {
     if (userEmail) {
       dispatch(fetchEvents(userEmail));
@@ -33,9 +39,38 @@ const DailySchedule = () => {
     setSelectedDate(new Date(event.target.value as string));
   };
 
-  // const handleToggleAvailability = (item) => {
-  //   dispatch(updateScheduleItem({ userEmail, item: { ...item, available: !item.available } }));
-  // };
+  const handleTimeChange = (setFunc: (value: number) => void) => (event: React.ChangeEvent<HTMLInputElement>) => {
+    setFunc(parseInt(event.target.value));
+  };
+
+  const filteredHours = (start: number, end: number) => {
+    let hours = [];
+    if (start <= end) {
+      hours = Array.from({ length: end - start }, (_, i) => start + i);
+    } else {
+      hours = [
+        ...Array.from({ length: 24 - start }, (_, i) => start + i),
+        ...Array.from({ length: end }, (_, i) => i)
+      ];
+    }
+    return hours;
+  };
+
+  const renderHourlySchedule = (start: number, end: number) => {
+    const hours = filteredHours(start, end).map(i => {
+      const hourStart = addHours(startOfDay(selectedDate), i);
+      const formattedTime = format(hourStart, 'hh:00 a');
+
+      return (
+        <Box key={i} sx={{ mb: 1, p: 1, border: '1px solid grey', borderRadius: 2 }}>
+          <Typography variant="body1"><strong>{formattedTime}</strong></Typography>
+          <Typography>test</Typography>
+        </Box>
+      );
+    });
+
+    return <Box>{hours}</Box>;
+  };
 
   return (
     <Box sx={{ p: 3, backgroundColor: 'white', borderRadius: 2 }}>
@@ -59,12 +94,55 @@ const DailySchedule = () => {
           })}
         </Select>
       </FormControl>
+
+      <Box sx={{ mb: 2 }}>
+        <Typography variant="h6">Set Hours</Typography>
+        <Grid container spacing={2}>
+          <Grid item xs={4}>
+            <TextField
+              label="Sleep Start"
+              type="number"
+              value={sleepStart}
+              onChange={handleTimeChange(setSleepStart)}
+              inputProps={{ min: 0, max: 23 }}
+            />
+          </Grid>
+          <Grid item xs={4}>
+            <TextField
+              label="Sleep End"
+              type="number"
+              value={sleepEnd}
+              onChange={handleTimeChange(setSleepEnd)}
+              inputProps={{ min: 0, max: 23 }}
+            />
+          </Grid>
+          <Grid item xs={4}>
+            <TextField
+              label="Work Start"
+              type="number"
+              value={workStart}
+              onChange={handleTimeChange(setWorkStart)}
+              inputProps={{ min: 0, max: 23 }}
+            />
+          </Grid>
+          <Grid item xs={4}>
+            <TextField
+              label="Work End"
+              type="number"
+              value={workEnd}
+              onChange={handleTimeChange(setWorkEnd)}
+              inputProps={{ min: 0, max: 23 }}
+            />
+          </Grid>
+        </Grid>
+      </Box>
+
       <Accordion expanded={expanded === 'sleep'} onChange={handleChange('sleep')}>
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
           <Typography>Sleep Hours</Typography>
         </AccordionSummary>
         <AccordionDetails>
-          <HourlySchedule date={selectedDate} schedule={schedule} handleToggleAvailability={() => {}} /> {/* Update this as needed to show sleep hours */}
+          {renderHourlySchedule(sleepStart, sleepEnd)}
         </AccordionDetails>
       </Accordion>
       <Accordion expanded={expanded === 'work'} onChange={handleChange('work')}>
@@ -72,7 +150,7 @@ const DailySchedule = () => {
           <Typography>Work Hours</Typography>
         </AccordionSummary>
         <AccordionDetails>
-          <HourlySchedule date={selectedDate} schedule={schedule} handleToggleAvailability={() => {}} /> {/* Update this as needed to show work hours */}
+          {renderHourlySchedule(workStart, workEnd)}
         </AccordionDetails>
       </Accordion>
       <Accordion expanded={expanded === 'afterwork'} onChange={handleChange('afterwork')}>
@@ -80,7 +158,7 @@ const DailySchedule = () => {
           <Typography>After Work Hours</Typography>
         </AccordionSummary>
         <AccordionDetails>
-          <HourlySchedule date={selectedDate} schedule={schedule} handleToggleAvailability={() => {}} /> {/* Update this as needed to show after work hours */}
+          {renderHourlySchedule(workEnd, sleepStart)}
         </AccordionDetails>
       </Accordion>
     </Box>
@@ -88,4 +166,5 @@ const DailySchedule = () => {
 };
 
 export default DailySchedule;
+
 
