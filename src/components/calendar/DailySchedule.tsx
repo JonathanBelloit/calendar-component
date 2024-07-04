@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Accordion, AccordionSummary, AccordionDetails, Box, Typography, FormControl, InputLabel, Select, MenuItem, Button, TextField, Grid } from "@mui/material";
+import { Accordion, AccordionSummary, AccordionDetails, Box, Typography, FormControl, InputLabel, Select, MenuItem, Button, TextField, Grid, Stack } from "@mui/material";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useAppDispatch } from "../../hooks/useAppDispatch";
 import { getCurrentUserEmail } from "../../hooks/useCurrentUserEmail";
@@ -8,6 +8,7 @@ import { fetchSchedule, selectSchedule, updateScheduleItem } from "../../redux/s
 import { useSelector } from "react-redux";
 import { formatISO, addHours, startOfDay, format } from 'date-fns';
 import HourlySchedule from './HourlySchedule';
+import { CiSettings } from "react-icons/ci";
 
 const DailySchedule = () => {
   const dispatch = useAppDispatch();
@@ -17,6 +18,7 @@ const DailySchedule = () => {
 
   const [expanded, setExpanded] = useState<string | false>(false);
   const [selectedDate, setSelectedDate] = useState(new Date());
+  const [showSethours, setShowSetHours] = useState(false);
 
   // State for start and end hours
   const [sleepStart, setSleepStart] = useState(22); // Default to 10 PM
@@ -74,7 +76,10 @@ const DailySchedule = () => {
 
   return (
     <Box sx={{ p: 3, backgroundColor: 'white', borderRadius: 2 }}>
-      <Typography variant="h4" sx={{ mb: 2 }}>Daily Schedule</Typography>
+      <Stack direction="row" justifyContent="space-between" alignItems="center">
+        <Typography variant="h4" sx={{ mb: 2 }}>Daily Schedule</Typography>
+        <CiSettings size={30} onClick={()=> setShowSetHours(!showSethours)} />
+      </Stack>
       <FormControl fullWidth sx={{ mb: 2 }}>
         <InputLabel id="select-day-label">Select Day</InputLabel>
         <Select
@@ -94,11 +99,11 @@ const DailySchedule = () => {
           })}
         </Select>
       </FormControl>
-
+      {showSethours && (
       <Box sx={{ mb: 2 }}>
         <Typography variant="h6">Set Hours</Typography>
         <Grid container spacing={2}>
-          <Grid item xs={4}>
+          <Grid item xs={3}>
             <TextField
               label="Sleep Start"
               type="number"
@@ -107,7 +112,7 @@ const DailySchedule = () => {
               inputProps={{ min: 0, max: 23 }}
             />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={3}>
             <TextField
               label="Sleep End"
               type="number"
@@ -116,7 +121,7 @@ const DailySchedule = () => {
               inputProps={{ min: 0, max: 23 }}
             />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={3}>
             <TextField
               label="Work Start"
               type="number"
@@ -125,7 +130,7 @@ const DailySchedule = () => {
               inputProps={{ min: 0, max: 23 }}
             />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={3}>
             <TextField
               label="Work End"
               type="number"
@@ -136,7 +141,7 @@ const DailySchedule = () => {
           </Grid>
         </Grid>
       </Box>
-
+    )}
       <Accordion expanded={expanded === 'sleep'} onChange={handleChange('sleep')}>
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
           <Typography>Sleep Hours</Typography>
