@@ -19,8 +19,8 @@ const DailySchedule = () => {
   const today = new Date();
 
   const [expanded, setExpanded] = useState<string | false>(false);
-  const [selectedDate, setSelectedDate] = useState(today);
-  const [showSethours, setShowSetHours] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(formatISO(today, { representation: 'date' }));
+  const [showSetHours, setShowSetHours] = useState(false);
 
   // State for start and end hours
   const [sleepStart, setSleepStart] = useState(22); // Default to 10 PM
@@ -31,7 +31,7 @@ const DailySchedule = () => {
   useEffect(() => {
     if (userEmail) {
       dispatch(fetchEvents(userEmail));
-      dispatch(fetchSchedule({ userEmail, date: formatISO(selectedDate, { representation: 'date' }) }));
+      dispatch(fetchSchedule({ userEmail, date: selectedDate }));
     }
   }, [dispatch, userEmail, selectedDate]);
 
@@ -40,7 +40,7 @@ const DailySchedule = () => {
   };
 
   const handleDateChange = (event: SelectChangeEvent<string>) => {
-    setSelectedDate(new Date(event.target.value));
+    setSelectedDate(event.target.value);
   };
 
   const handleTimeChange = (setFunc: (value: number) => void) => (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -62,7 +62,7 @@ const DailySchedule = () => {
 
   const renderHourlySchedule = (start: number, end: number) => {
     const hours = filteredHours(start, end).map(i => {
-      const hourStart = addHours(startOfDay(selectedDate), i);
+      const hourStart = addHours(startOfDay(new Date(selectedDate)), i);
       const formattedTime = format(hourStart, 'hh:00 a');
 
       return (
@@ -80,9 +80,9 @@ const DailySchedule = () => {
     <Box sx={{ p: 3, backgroundColor: 'white', borderRadius: 2 }}>
       <Stack direction="row" justifyContent="space-between" alignItems="center">
         <Typography variant="h4" sx={{ mb: 2 }}>Daily Schedule</Typography>
-        <CiSettings size={30} onClick={()=> setShowSetHours(!showSethours)} />
+        <CiSettings size={30} onClick={()=> setShowSetHours(!showSetHours)} />
       </Stack>
-        {showSethours && (
+      {showSetHours && (
         <Box sx={{ mb: 2 }}>
           <Typography variant="h6">Set Hours</Typography>
           <Grid container spacing={2}>
@@ -130,14 +130,14 @@ const DailySchedule = () => {
         <Select
           labelId="select-day-label"
           id="select-day"
-          value={selectedDate.toISOString()}
+          value={selectedDate}
           onChange={handleDateChange}
           label="Select Day"
         >
           {[...Array(7)].map((_, index) => {
             const dateOption = addHours(startOfDay(new Date()), index * 24);
             return (
-              <MenuItem key={index} value={dateOption.toISOString()}>
+              <MenuItem key={index} value={formatISO(dateOption, { representation: 'date' })}>
                 {format(dateOption, 'EEEE, MMMM do yyyy')}
               </MenuItem>
             );
@@ -173,5 +173,3 @@ const DailySchedule = () => {
 };
 
 export default DailySchedule;
-
-
