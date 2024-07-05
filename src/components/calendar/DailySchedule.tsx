@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Accordion, AccordionSummary, AccordionDetails, Box, Typography, FormControl, InputLabel, Select, MenuItem, Button, TextField, Grid, Stack } from "@mui/material";
+import { Accordion, AccordionSummary, AccordionDetails, Box, Typography, FormControl, InputLabel, Select, MenuItem, Button, TextField, Grid, Stack, SelectChangeEvent } from "@mui/material";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useAppDispatch } from "../../hooks/useAppDispatch";
 import { getCurrentUserEmail } from "../../hooks/useCurrentUserEmail";
@@ -16,8 +16,10 @@ const DailySchedule = () => {
   const events = useSelector(selectEvents);
   const schedule = useSelector(selectSchedule);
 
+  const today = new Date();
+
   const [expanded, setExpanded] = useState<string | false>(false);
-  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState(today);
   const [showSethours, setShowSetHours] = useState(false);
 
   // State for start and end hours
@@ -37,8 +39,8 @@ const DailySchedule = () => {
     setExpanded(isExpanded ? panel : false);
   };
 
-  const handleDateChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-    setSelectedDate(new Date(event.target.value as string));
+  const handleDateChange = (event: SelectChangeEvent<string>) => {
+    setSelectedDate(new Date(event.target.value));
   };
 
   const handleTimeChange = (setFunc: (value: number) => void) => (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -80,6 +82,49 @@ const DailySchedule = () => {
         <Typography variant="h4" sx={{ mb: 2 }}>Daily Schedule</Typography>
         <CiSettings size={30} onClick={()=> setShowSetHours(!showSethours)} />
       </Stack>
+        {showSethours && (
+        <Box sx={{ mb: 2 }}>
+          <Typography variant="h6">Set Hours</Typography>
+          <Grid container spacing={2}>
+            <Grid item xs={3}>
+              <TextField
+                label="Sleep Start"
+                type="number"
+                value={sleepStart}
+                onChange={handleTimeChange(setSleepStart)}
+                inputProps={{ min: 0, max: 23 }}
+              />
+            </Grid>
+            <Grid item xs={3}>
+              <TextField
+                label="Sleep End"
+                type="number"
+                value={sleepEnd}
+                onChange={handleTimeChange(setSleepEnd)}
+                inputProps={{ min: 0, max: 23 }}
+              />
+            </Grid>
+            <Grid item xs={3}>
+              <TextField
+                label="Work Start"
+                type="number"
+                value={workStart}
+                onChange={handleTimeChange(setWorkStart)}
+                inputProps={{ min: 0, max: 23 }}
+              />
+            </Grid>
+            <Grid item xs={3}>
+              <TextField
+                label="Work End"
+                type="number"
+                value={workEnd}
+                onChange={handleTimeChange(setWorkEnd)}
+                inputProps={{ min: 0, max: 23 }}
+              />
+            </Grid>
+          </Grid>
+        </Box>
+      )}
       <FormControl fullWidth sx={{ mb: 2 }}>
         <InputLabel id="select-day-label">Select Day</InputLabel>
         <Select
@@ -99,49 +144,6 @@ const DailySchedule = () => {
           })}
         </Select>
       </FormControl>
-      {showSethours && (
-      <Box sx={{ mb: 2 }}>
-        <Typography variant="h6">Set Hours</Typography>
-        <Grid container spacing={2}>
-          <Grid item xs={3}>
-            <TextField
-              label="Sleep Start"
-              type="number"
-              value={sleepStart}
-              onChange={handleTimeChange(setSleepStart)}
-              inputProps={{ min: 0, max: 23 }}
-            />
-          </Grid>
-          <Grid item xs={3}>
-            <TextField
-              label="Sleep End"
-              type="number"
-              value={sleepEnd}
-              onChange={handleTimeChange(setSleepEnd)}
-              inputProps={{ min: 0, max: 23 }}
-            />
-          </Grid>
-          <Grid item xs={3}>
-            <TextField
-              label="Work Start"
-              type="number"
-              value={workStart}
-              onChange={handleTimeChange(setWorkStart)}
-              inputProps={{ min: 0, max: 23 }}
-            />
-          </Grid>
-          <Grid item xs={3}>
-            <TextField
-              label="Work End"
-              type="number"
-              value={workEnd}
-              onChange={handleTimeChange(setWorkEnd)}
-              inputProps={{ min: 0, max: 23 }}
-            />
-          </Grid>
-        </Grid>
-      </Box>
-    )}
       <Accordion expanded={expanded === 'sleep'} onChange={handleChange('sleep')}>
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
           <Typography>Sleep Hours</Typography>
